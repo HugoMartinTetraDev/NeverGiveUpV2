@@ -34,7 +34,7 @@ export class OrderViewComponent implements OnInit {
     }
 
     loadOrder(orderId: string) {
-        this.orderService.getOrderById(orderId).subscribe(order => {
+        this.orderService.getOrderById(orderId).subscribe((order: Order) => {
             this.order = order;
         });
     }

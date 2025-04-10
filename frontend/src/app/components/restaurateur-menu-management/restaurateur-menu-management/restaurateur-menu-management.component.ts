@@ -36,7 +36,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
 
   ngOnInit(): void {
     // Récupérer l'ID du restaurant du restaurateur connecté (à implémenter avec AuthService)
-    this.restaurantService.getRestaurantById(this.restaurantId).subscribe(restaurant => {
+    this.restaurantService.getRestaurantById(this.restaurantId).subscribe((restaurant: Restaurant) => {
       this.restaurant = restaurant;
     });
   }
@@ -47,7 +47,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
       data: { menu }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: Menu) => {
       if (result) {
         if (menu) {
           this.restaurantService.updateMenu(this.restaurantId, result).subscribe();
@@ -64,7 +64,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
       data: { item }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: MenuItem) => {
       if (result) {
         if (item) {
           this.restaurantService.updateArticle(this.restaurantId, result).subscribe();
@@ -84,7 +84,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.restaurantService.deleteMenu(this.restaurantId, menu.id).subscribe();
       }
@@ -100,7 +100,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
       }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result) {
         this.restaurantService.deleteArticle(this.restaurantId, item.id).subscribe();
       }

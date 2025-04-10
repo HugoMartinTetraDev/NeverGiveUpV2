@@ -19,6 +19,13 @@ export class OrderService {
     ) {}
 
     /**
+     * Récupère l'ordre courant - méthode pour compatibilité avec les composants existants
+     */
+    getCurrentOrder(): Observable<Order | null> {
+        return this.currentOrder$;
+    }
+
+    /**
      * Récupère toutes les commandes de l'utilisateur connecté
      */
     getOrders(): Observable<Order[]> {
@@ -125,5 +132,21 @@ export class OrderService {
 
         this.notificationService.success('Commande ajoutée au panier');
         return of(true);
+    }
+
+    /**
+     * Supprime une commande par son ID
+     */
+    deleteOrder(orderId: string): Observable<void> {
+        return this.apiService.delete<void>(`orders/${orderId}`).pipe(
+            tap(() => {
+                this.currentOrderSubject.next(null);
+                this.notificationService.success('Commande supprimée avec succès');
+            }),
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la suppression de la commande');
+                return throwError(() => error);
+            })
+        );
     }
 } 

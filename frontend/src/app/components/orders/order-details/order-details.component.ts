@@ -37,7 +37,7 @@ export class OrderDetailsComponent implements OnInit {
     }
 
     loadOrder() {
-        this.orderService.currentOrder$.subscribe(order => {
+        this.orderService.currentOrder$.subscribe((order: Order | null) => {
             this.currentOrder = order;
         });
     }
@@ -66,9 +66,11 @@ export class OrderDetailsComponent implements OnInit {
             panelClass: 'order-dialog'
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result && this.currentOrder) {
-                this.currentOrder = null;
+                this.orderService.deleteOrder(this.currentOrder.id).subscribe((success: void) => {
+                    this.currentOrder = null;
+                });
             }
         });
     }
