@@ -1,5 +1,5 @@
 .delete-dialog {
-  padding: 1rem;
+  padding: 16px;
   min-width: 300px;
   max-width: 500px;
 
@@ -16,11 +16,32 @@
 
 .button-group {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: 10px;
+  justify-content: center;
+}
 
-  button {
-    flex: 1;
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  
+  p {
+    margin-top: 10px;
+    color: #f44336;
+  }
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left: 4px solid #f44336;
+  padding: 10px 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+  
+  p {
+    color: #f44336;
+    margin: 0;
+    font-size: 0.95rem;
   }
 } 

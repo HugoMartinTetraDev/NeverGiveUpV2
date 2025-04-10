@@ -161,8 +161,11 @@ export class ProfileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('Profile deleted');
-        this.router.navigate(['/']);
+        // Si la suppression a réussi
+        this.notificationService.success('Votre compte a été supprimé avec succès');
+        
+        // Rediriger vers la page de connexion
+        this.router.navigate(['/login']);
       }
     });
   }

@@ -3,10 +3,20 @@
   
   <div mat-dialog-content>
     <p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+    <p>Cette action est irréversible et toutes vos données seront définitivement supprimées.</p>
+    
+    <div *ngIf="isDeleting" class="spinner-container">
+      <mat-spinner diameter="30"></mat-spinner>
+      <p>Suppression en cours...</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
   </div>
   
   <div mat-dialog-actions class="button-group">
-    <button mat-raised-button color="warn" (click)="onConfirm()">SUPPRIMER</button>
-    <button mat-raised-button (click)="onCancel()">ANNULER</button>
+    <button mat-raised-button color="warn" (click)="onConfirm()" [disabled]="isDeleting">SUPPRIMER</button>
+    <button mat-raised-button (click)="onCancel()" [disabled]="isDeleting">ANNULER</button>
   </div>
 </div> 

@@ -9,6 +9,7 @@ import {
   BadRequestException,
   Param,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/user.dto';
@@ -44,10 +45,24 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user profile' })
-  @ApiResponse({ status: 200, description: 'User profile updated successfully' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({ status: 200, description: 'User profile updated' })
+  async updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      return await this.usersService.updateUser(req.user.id, updateUserDto);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete user account' })
+  @ApiResponse({ status: 200, description: 'User account deleted' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  updateProfile(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateProfile(req.user.id, updateUserDto);
+  async deleteAccount(@Request() req) {
+    return this.usersService.deleteUser(req.user.id);
   }
 
   @Post('profile/change-password')

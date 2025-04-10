@@ -77,6 +77,59 @@ export class UsersService {
     return { message: 'Password updated successfully' };
   }
 
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    // Vérifier si l'utilisateur existe
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    // Préparer les données à mettre à jour
+    const dataToUpdate: any = { ...updateUserDto };
+
+    // Si un nouveau mot de passe est fourni, le hasher
+    if (updateUserDto.password) {
+      const salt = await bcrypt.genSalt();
+      dataToUpdate.password = await bcrypt.hash(updateUserDto.password, salt);
+    }
+
+    // Mettre à jour l'utilisateur
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: dataToUpdate,
+    });
+
+    // Ne pas renvoyer le mot de passe
+    const { password, ...result } = updatedUser;
+    return result;
+  }
+
+  async deleteUser(id: string) {
+    // Vérifier si l'utilisateur existe
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+
+    // Supprimer d'abord les rôles de l'utilisateur
+    await this.prisma.userRole.deleteMany({
+      where: { userId: id },
+    });
+
+    // Supprimer l'utilisateur
+    await this.prisma.user.delete({
+      where: { id },
+    });
+
+    return { message: 'User deleted successfully' };
+  }
+
   // Admin methods for user management
   async findAllUsers(role?: Role) {
     const where = role 
