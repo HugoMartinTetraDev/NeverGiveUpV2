@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProfileDeleteDialogComponent } from './profile-delete-dialog/profile-delete-dialog.component';
 import { NotificationService } from '../../services/notification.service';
+import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 
 interface UserProfile {
   firstName: string;
@@ -37,27 +40,87 @@ interface UserProfile {
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile = {
-    firstName: 'Jhon',
-    lastName: 'Doe',
-    birthDate: '01/01/2020',
-    email: 'cesi@cesi.Fr',
-    password: '**************',
-    address: '24 Le Paquebot',
-    referralCode: '1345-5678'
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    email: '',
+    password: '••••••••••',
+    address: '',
+    referralCode: ''
   };
 
   friendReferralCode: string = '';
   referralSuccess: boolean = false;
   referralMessage: string = '';
+  isLoading: boolean = true;
 
   constructor(
     private router: Router,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService,
+    private userService: UserService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  loadUserProfile(): void {
+    this.isLoading = true;
+    
+    // Récupérer les données de l'utilisateur courant
+    const currentUser = this.authService.currentUser;
+    
+    if (currentUser) {
+      // Utiliser les données du localStorage si disponibles
+      this.userProfile = {
+        firstName: currentUser.firstName || '',
+        lastName: currentUser.lastName || '',
+        birthDate: currentUser.birthDate ? this.formatBirthDate(currentUser.birthDate) : '',
+        email: currentUser.email || '',
+        password: '••••••••••', // On ne montre jamais le vrai mot de passe
+        address: currentUser.address || '',
+        referralCode: currentUser.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+      };
+      this.isLoading = false;
+    } else {
+      // Si pas d'utilisateur, essayer de récupérer le profil
+      this.userService.getUserProfile().subscribe({
+        next: (profile: User) => {
+          this.userProfile = {
+            firstName: profile.firstName || '',
+            lastName: profile.lastName || '',
+            birthDate: profile.birthDate ? this.formatBirthDate(profile.birthDate) : '',
+            email: profile.email || '',
+            password: '••••••••••',
+            address: profile.address || '',
+            referralCode: profile.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+          };
+          this.isLoading = false;
+        },
+        error: (error: any) => {
+          console.error('Erreur lors de la récupération du profil:', error);
+          this.notificationService.error('Impossible de récupérer votre profil');
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  formatBirthDate(dateString: string | Date): string {
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+      return formatDate(date, 'dd/MM/yyyy', 'fr-FR');
+    } catch (error) {
+      console.error('Erreur lors du formatage de la date:', error);
+      return '';
+    }
+  }
 
   onModify(): void {
     this.router.navigate(['/compte/modifier']);

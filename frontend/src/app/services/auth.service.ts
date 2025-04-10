@@ -108,6 +108,14 @@ export class AuthService {
   }
 
   /**
+   * Met à jour les données utilisateur stockées
+   */
+  refreshUserData(user: User): void {
+    localStorage.setItem('user_data', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  /**
    * Déconnecte l'utilisateur
    */
   logout(): void {

@@ -1,7 +1,12 @@
 <div class="profile-container">
   <h1>Compte</h1>
 
-  <div class="profile-form">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Chargement du profil...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="profile-form">
     <mat-form-field appearance="outline">
       <mat-label>Prénom</mat-label>
       <input matInput [(ngModel)]="userProfile.firstName" placeholder="ex : Jhon" readonly>
