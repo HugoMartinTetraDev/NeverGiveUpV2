@@ -1,8 +1,8 @@
 <!-- Main Layout -->
 <mat-sidenav-container class="sidenav-container">
   <!-- Navigation Sidebar -->
-  <mat-sidenav #sidenav mode="side" class="sidenav" id="mainSidenav">
-    <app-sidebar></app-sidebar>
+  <mat-sidenav #sidenav mode="over" class="sidenav" id="mainSidenav" [autoFocus]="false" [disableClose]="false">
+    <app-sidebar (menuItemSelected)="sidenav.close()"></app-sidebar>
   </mat-sidenav>
 
   <!-- Cart Sidebar -->
@@ -14,7 +14,7 @@
   <mat-sidenav-content>
     <!-- Header -->
     <app-header 
-      (menuClick)="sidenav.toggle()"
+      (menuClick)="toggleSidebar()"
       (cartClick)="toggleCart()"
     ></app-header>
 

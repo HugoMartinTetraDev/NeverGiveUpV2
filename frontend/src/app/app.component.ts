@@ -46,44 +46,44 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log('Navigation vers la page de connexion, fermeture du sidenav');
         this.sidenav.close();
       }
+      
+      // Fermer la sidebar après navigation (lorsqu'un élément de menu est sélectionné)
+      if (this.sidenav && this.sidenav.opened) {
+        this.sidenav.close();
+      }
     });
   }
 
   ngOnInit(): void {
-    // Surveiller les changements d'utilisateur
-    this.authService.currentUser$.subscribe(user => {
-      console.log("Utilisateur détecté dans app.component:", user);
-      
-      // Si l'utilisateur est connecté et qu'on n'est pas sur la page de connexion, on ouvre le sidenav
-      if (user && !this.isLoginPage) {
-        console.log("Utilisateur connecté, on va ouvrir le sidenav");
-        
-        // Attendre que le sidenav soit disponible
-        setTimeout(() => {
-          if (this.sidenav) {
-            console.log("Ouverture du sidenav");
-            this.sidenav.open();
-          } else {
-            console.log("Sidenav non disponible");
-          }
-        }, 500);
+    // Vérifier si l'utilisateur est connecté au démarrage
+    this.authService.currentUser$.subscribe({
+      next: (user) => {
+        if (user) {
+          console.log('Utilisateur connecté:', user);
+          // Logique additionnelle si nécessaire
+        } else {
+          console.log('Aucun utilisateur connecté');
+        }
       }
     });
   }
 
   ngAfterViewInit(): void {
-    console.log("AfterViewInit, sidenav:", this.sidenav);
-    // Après le chargement complet de la vue, vérifier si on doit ouvrir le sidenav
-    setTimeout(() => {
-      const user = this.authService.currentUser;
-      if (user && this.sidenav && !this.isLoginPage) {
-        console.log("Ouverture du sidenav après chargement de la vue");
-        this.sidenav.open();
-      }
-    }, 1000);
+    // Configuration de la sidebar pour qu'elle se ferme au clic en dehors
+    if (this.sidenav) {
+      // S'assurer que le mode est configuré pour se fermer au clic en dehors
+      this.sidenav.mode = 'over';
+      console.log('Sidenav configuré en mode over');
+    }
   }
 
   toggleCart() {
     this.isCartVisible = !this.isCartVisible;
+  }
+  
+  toggleSidebar() {
+    if (this.sidenav) {
+      this.sidenav.toggle();
+    }
   }
 }

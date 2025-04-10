@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +18,9 @@ import { HasRoleDirective } from '../../../directives/has-role.directive';
 export class SidebarComponent implements OnInit {
   // Pour accès au enum UserRole dans le template
   UserRole = UserRole;
+  
+  // Événement émis lorsqu'un élément de menu est sélectionné
+  @Output() menuItemSelected = new EventEmitter<void>();
   
   // Propriétés pour suivre les rôles spécifiques
   hasClientRole = false;
@@ -59,5 +62,13 @@ export class SidebarComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+    this.menuItemSelected.emit();
+  }
+  
+  /**
+   * Émet un événement lorsqu'un élément de menu est sélectionné
+   */
+  onMenuItemClick(): void {
+    this.menuItemSelected.emit();
   }
 }

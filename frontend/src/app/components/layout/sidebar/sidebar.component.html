@@ -2,15 +2,15 @@
   <!-- Section Client -->
   <ng-container *appHasRole="[UserRole.CLIENT, UserRole.ADMIN]">
     <a mat-list-item>Client</a>
-    <a mat-list-item routerLink="/compte">
+    <a mat-list-item routerLink="/compte" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>account_circle</mat-icon>
       <span matListItemTitle>Compte Client</span>
     </a>
-    <a mat-list-item routerLink="/customer-purchase">
+    <a mat-list-item routerLink="/customer-purchase" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>shopping_cart</mat-icon>
       <span matListItemTitle>Commander</span>
     </a>
-    <a mat-list-item routerLink="/commandes">
+    <a mat-list-item routerLink="/commandes" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>receipt_long</mat-icon>
       <span matListItemTitle>Commandes</span>
     </a>
@@ -19,19 +19,19 @@
   <!-- Section Restaurateur -->
   <ng-container *appHasRole="[UserRole.RESTAURATEUR, UserRole.ADMIN]">
     <a mat-list-item>Restaurateur</a>
-    <a mat-list-item routerLink="/restaurateur/compte">
+    <a mat-list-item routerLink="/restaurateur/compte" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>account_circle</mat-icon>
       <span matListItemTitle>Compte Restaurateur</span>
     </a>
-    <a mat-list-item routerLink="/restaurateur/commandes">
+    <a mat-list-item routerLink="/restaurateur/commandes" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>restaurant_menu</mat-icon>
       <span matListItemTitle>Gestion Commandes</span>
     </a>
-    <a mat-list-item routerLink="/restaurateur/menu-management">
+    <a mat-list-item routerLink="/restaurateur/menu-management" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>menu_book</mat-icon>
       <span matListItemTitle>Gestion Menus</span>
     </a>
-    <a mat-list-item routerLink="/restaurateur/statistiques">
+    <a mat-list-item routerLink="/restaurateur/statistiques" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>analytics</mat-icon>
       <span matListItemTitle>Statistiques</span>
     </a>
@@ -40,11 +40,11 @@
   <!-- Section Livreur -->
   <ng-container *appHasRole="[UserRole.LIVREUR, UserRole.ADMIN]">
     <a mat-list-item>Livreur</a>
-    <a mat-list-item routerLink="/deliverer/compte">
+    <a mat-list-item routerLink="/deliverer/compte" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>account_circle</mat-icon>
       <span matListItemTitle>Compte Livreur</span>
     </a>
-    <a mat-list-item routerLink="/deliverer/commandes">
+    <a mat-list-item routerLink="/deliverer/commandes" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>local_shipping</mat-icon>
       <span matListItemTitle>Gestion Livraisons</span>
     </a>
@@ -53,37 +53,37 @@
   <!-- Section Admin/Développeur -->
   <ng-container *appHasRole="[UserRole.ADMIN]">
     <a mat-list-item>Développeur</a>
-    <a mat-list-item routerLink="/developer/compte">
+    <a mat-list-item routerLink="/developer/compte" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>account_circle</mat-icon>
       <span matListItemTitle>Compte Développeur</span>
     </a>
-    <a mat-list-item routerLink="/dev">
+    <a mat-list-item routerLink="/dev" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>developer_mode</mat-icon>
       <span matListItemTitle>Composants</span>
     </a>
 
     <!-- Section Service Commercial -->
     <a mat-list-item>Service Commercial</a>
-    <a mat-list-item routerLink="/restaurateur/commercial-orders">
+    <a mat-list-item routerLink="/restaurateur/commercial-orders" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>point_of_sale</mat-icon>
       <span matListItemTitle>Gestion Commandes</span>
     </a>
-    <a mat-list-item routerLink="/restaurateur/commercial-users">
+    <a mat-list-item routerLink="/restaurateur/commercial-users" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>people</mat-icon>
       <span matListItemTitle>Gestion Clients</span>
     </a>
   
     <!-- Section Service Technique -->
     <a mat-list-item>Service Technique</a>
-    <a mat-list-item routerLink="/tech">
+    <a mat-list-item routerLink="/tech" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>code</mat-icon>
       <span matListItemTitle>Gestion Composants</span>
     </a>
-    <a mat-list-item routerLink="/tech/logs">
+    <a mat-list-item routerLink="/tech/logs" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>analytics</mat-icon>
       <span matListItemTitle>Logs</span>
     </a>
-    <a mat-list-item routerLink="/tech/storage-reset">
+    <a mat-list-item routerLink="/tech/storage-reset" (click)="onMenuItemClick()">
       <mat-icon matListItemIcon>delete_sweep</mat-icon>
       <span matListItemTitle>Réinitialiser Stockage</span>
     </a>
