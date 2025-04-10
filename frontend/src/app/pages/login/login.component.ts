@@ -53,7 +53,14 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/landing']);
         },
         error: (error) => {
-          this.errorMessage = error?.message || 'An error occurred during login. Please try again.';
+          console.error('Erreur de connexion:', error);
+          
+          // Gérer spécifiquement les erreurs 401 (Unauthorized)
+          if (error.status === 401) {
+            this.errorMessage = 'Identifiant ou mot de passe incorrect';
+          } else {
+            this.errorMessage = error?.message || 'Une erreur est survenue lors de la connexion. Veuillez réessayer.';
+          }
         }
       });
   }

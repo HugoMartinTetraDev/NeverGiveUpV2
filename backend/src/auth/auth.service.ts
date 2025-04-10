@@ -26,7 +26,7 @@ export class AuthService {
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Identifiant ou mot de passe incorrect');
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };

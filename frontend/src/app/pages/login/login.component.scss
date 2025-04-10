@@ -125,11 +125,24 @@ h2 {
 
 .error-alert {
   background-color: #ffeeee;
-  color: #ff3b30;
-  padding: 10px;
-  border-radius: 6px;
+  color: #cc0000;
+  padding: 15px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: left;
+  border-left: 4px solid #ff3b30;
+  display: flex;
+  align-items: center;
+  
+  .error-icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  .error-content {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
 }
 
 .btn-login {

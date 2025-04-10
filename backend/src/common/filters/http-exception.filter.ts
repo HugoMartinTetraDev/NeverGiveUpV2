@@ -36,6 +36,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errors = exceptionBody.errors || null;
         errorCode = exceptionBody.errorCode || null;
         
+        // Traitement spécial pour les erreurs d'authentification
+        if (status === HttpStatus.UNAUTHORIZED) {
+          message = 'Identifiant ou mot de passe incorrect';
+          errorCode = 'AUTH_FAILED';
+        }
+        
         // Traitement spécial pour les erreurs de validation (ValidationPipe)
         if (Array.isArray(exceptionBody.message) && status === HttpStatus.BAD_REQUEST) {
           const validationErrors = exceptionBody.message as string[];

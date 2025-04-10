@@ -33,11 +33,16 @@ export const errorInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, n
           }
           break;
         case 401:
-          errorMessage = 'Session expirée, veuillez vous reconnecter';
-          // Ne pas déconnecter lors d'une tentative de connexion
-          if (!req.url.includes('auth/login')) {
-            authService.logout();
-            router.navigate(['/login']);
+          if (req.url.includes('auth/login')) {
+            // Message convivial pour échec de connexion
+            errorMessage = 'Identifiant ou mot de passe incorrect';
+          } else {
+            errorMessage = 'Session expirée, veuillez vous reconnecter';
+            // Ne pas déconnecter lors d'une tentative de connexion
+            if (!req.url.includes('auth/login')) {
+              authService.logout();
+              router.navigate(['/login']);
+            }
           }
           break;
         case 403:

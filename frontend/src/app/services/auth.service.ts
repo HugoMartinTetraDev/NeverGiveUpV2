@@ -64,6 +64,15 @@ export class AuthService {
       .pipe(
         tap(response => this.handleAuthentication(response)),
         catchError(error => {
+          console.error('Erreur d\'authentification détaillée:', error);
+          
+          // Enrichir l'erreur avec un message plus explicite
+          if (error.status === 401) {
+            error.message = 'Identifiant ou mot de passe incorrect';
+          } else if (error.status === 0) {
+            error.message = 'Impossible de se connecter au serveur. Vérifiez votre connexion internet.';
+          }
+          
           return throwError(() => error);
         })
       );
