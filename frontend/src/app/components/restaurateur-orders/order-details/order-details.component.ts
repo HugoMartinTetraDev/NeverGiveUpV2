@@ -4,7 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RestaurateurOrdersService } from '../../../services/restaurateur-orders.service';
+import { RestaurateurOrdersService } from '../../../services/mocked/restaurateur-orders.service';
 import { RestaurateurOrder } from '../../../models/restaurateur-order.model';
 
 @Component({
