@@ -5,6 +5,14 @@ import { AuthService } from '../../../services/auth.service';
 import { AuthorizationService } from '../../../services/authorization.service';
 import { FormsModule } from '@angular/forms';
 
+// Interface pour permettre les entrées avec birthDate en string ou Date
+interface UserWithRoles {
+  id: number;
+  roles: UserRole[];
+  primaryRole?: UserRole;
+  [key: string]: any; // Pour permettre les autres propriétés
+}
+
 @Component({
   selector: 'app-user-roles-manager',
   standalone: true,
@@ -13,7 +21,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './user-roles-manager.component.scss'
 })
 export class UserRolesManagerComponent implements OnInit {
-  @Input() user!: User;
+  @Input() user!: UserWithRoles;
   allRoles = Object.values(UserRole);
   isLoading = false;
   errorMessage = '';
@@ -37,11 +45,14 @@ export class UserRolesManagerComponent implements OnInit {
     return this.user?.roles?.includes(role) || false;
   }
   
-  onRoleToggle(role: UserRole, isChecked: boolean): void {
+  onRoleToggle(role: UserRole, event: Event): void {
     this.errorMessage = '';
     this.successMessage = '';
     
     if (!this.user || !this.user.roles) return;
+    
+    // Extraire la valeur checked de l'élément input
+    const isChecked = (event.target as HTMLInputElement).checked;
     
     if (isChecked && !this.hasRole(role)) {
       // Ajouter le rôle
@@ -61,7 +72,13 @@ export class UserRolesManagerComponent implements OnInit {
       
       // Pour une démo simple, on met juste à jour localement
       this.user.roles = updatedRoles;
-      this.authService.refreshUserData(this.user);
+      
+      // Créer un objet conforme à User avant de le passer à refreshUserData
+      if (this.authService.currentUser && this.user.id === this.authService.currentUser.id) {
+        const userToUpdate = { ...this.authService.currentUser };
+        userToUpdate.roles = updatedRoles;
+        this.authService.refreshUserData(userToUpdate);
+      }
       
       this.successMessage = `Rôle ${role} ajouté avec succès`;
       this.isLoading = false;
@@ -93,7 +110,13 @@ export class UserRolesManagerComponent implements OnInit {
         this.user.primaryRole = updatedRoles[0];
       }
       
-      this.authService.refreshUserData(this.user);
+      // Créer un objet conforme à User avant de le passer à refreshUserData
+      if (this.authService.currentUser && this.user.id === this.authService.currentUser.id) {
+        const userToUpdate = { ...this.authService.currentUser };
+        userToUpdate.roles = updatedRoles;
+        userToUpdate.primaryRole = this.user.primaryRole;
+        this.authService.refreshUserData(userToUpdate);
+      }
       
       this.successMessage = `Rôle ${role} supprimé avec succès`;
       this.isLoading = false;
@@ -107,7 +130,13 @@ export class UserRolesManagerComponent implements OnInit {
     if (!this.user.roles.includes(role)) return;
     
     this.user.primaryRole = role;
-    this.authService.refreshUserData(this.user);
+    
+    // Créer un objet conforme à User avant de le passer à refreshUserData
+    if (this.authService.currentUser && this.user.id === this.authService.currentUser.id) {
+      const userToUpdate = { ...this.authService.currentUser };
+      userToUpdate.primaryRole = role;
+      this.authService.refreshUserData(userToUpdate);
+    }
     
     this.successMessage = `${role} défini comme rôle principal`;
     

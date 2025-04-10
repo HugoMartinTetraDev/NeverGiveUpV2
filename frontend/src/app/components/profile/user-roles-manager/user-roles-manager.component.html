@@ -10,7 +10,7 @@
         <input type="checkbox" 
                [id]="'role-' + role" 
                [checked]="hasRole(role)"
-               (change)="onRoleToggle(role, ($event.target as HTMLInputElement).checked)">
+               (change)="onRoleToggle(role, $event)">
         <label [for]="'role-' + role">{{ role }}</label>
       </div>
       

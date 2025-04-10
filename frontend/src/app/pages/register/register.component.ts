@@ -214,6 +214,26 @@ export class RegisterComponent implements OnInit {
 
     // Récupérer les valeurs du formulaire
     const formValues = this.registerForm.value;
+    
+    // Formater la date au format ISO 8601 (YYYY-MM-DD)
+    let birthDate: string;
+    try {
+      const rawDate = new Date(formValues.birthDate);
+      if (isNaN(rawDate.getTime())) {
+        throw new Error('Date invalide');
+      }
+      
+      // Format YYYY-MM-DD
+      const year = rawDate.getFullYear();
+      const month = String(rawDate.getMonth() + 1).padStart(2, '0');
+      const day = String(rawDate.getDate()).padStart(2, '0');
+      birthDate = `${year}-${month}-${day}`;
+    } catch (error) {
+      console.error('Erreur de formatage de date:', error);
+      this.errorMessage = 'Format de date invalide. Veuillez utiliser le format JJ/MM/AAAA.';
+      this.isLoading = false;
+      return;
+    }
 
     // Préparer les données pour l'API
     const userData: any = {
@@ -221,7 +241,7 @@ export class RegisterComponent implements OnInit {
       lastName: formValues.lastName,
       email: formValues.email,
       password: formValues.password,
-      birthDate: new Date(formValues.birthDate),
+      birthDate: birthDate,
       address: formValues.address,
       phoneNumber: formValues.phoneNumber || undefined,
       roles: this.rolesFormArray.value,

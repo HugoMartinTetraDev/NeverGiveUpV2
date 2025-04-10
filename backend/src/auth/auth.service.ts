@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, Logger, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -113,7 +113,7 @@ export class AuthService {
     password: string;
     firstName: string;
     lastName: string;
-    birthDate: Date;
+    birthDate: Date | string;  // Accepter soit une Date soit une chaîne
     address: string;
     roles: Role[];  // Tableau de rôles, maintenant obligatoire
     phoneNumber?: string;
@@ -137,6 +137,31 @@ export class AuthService {
       userData.roles = [Role.CLIENT]; // Par défaut, attribuer le rôle CLIENT
     }
 
+    // Transformer la date de naissance en objet Date valide
+    let birthDate: Date;
+    try {
+      if (typeof userData.birthDate === 'string') {
+        // Vérifier si la date est au format YYYY-MM-DD
+        if (/^\d{4}-\d{2}-\d{2}$/.test(userData.birthDate)) {
+          // Ajouter l'heure pour avoir un format ISO complet
+          birthDate = new Date(`${userData.birthDate}T00:00:00Z`);
+        } else {
+          // Essayer de parser la date telle quelle
+          birthDate = new Date(userData.birthDate);
+        }
+      } else {
+        // Déjà un objet Date
+        birthDate = userData.birthDate;
+      }
+
+      // Vérifier que la date est valide
+      if (isNaN(birthDate.getTime())) {
+        throw new Error('Date de naissance invalide');
+      }
+    } catch (error) {
+      throw new BadRequestException('Format de date de naissance invalide. Veuillez utiliser le format YYYY-MM-DD.');
+    }
+
     // Créer l'utilisateur avec transaction pour assurer l'intégrité des données
     const result = await this.prisma.$transaction(async (tx) => {
       // Créer l'utilisateur sans les rôles
@@ -146,7 +171,7 @@ export class AuthService {
           password: hashedPassword,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          birthDate: userData.birthDate,
+          birthDate: birthDate,
           address: userData.address,
           phoneNumber: userData.phoneNumber,
           siret: userData.siret,
