@@ -2,7 +2,7 @@ import { Component, OnInit, isDevMode } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/mocked/auth.service';
 import { finalize } from 'rxjs/operators';
 import { UserRole } from '../../models/user.model';
 

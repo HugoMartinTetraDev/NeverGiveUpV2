@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { User, UserRole, AuthResponse } from '../models/user.model';
+import { User, UserRole, AuthResponse } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'

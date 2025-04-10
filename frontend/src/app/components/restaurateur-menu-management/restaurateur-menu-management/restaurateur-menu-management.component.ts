@@ -7,7 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Restaurant, Menu, MenuItem } from '../../../models/restaurant.model';
 import { ConfirmDialogComponent } from '../../../components/confirm-dialog/confirm-dialog.component';
-import { RestaurantService } from '../../../services/restaurant.service';
+import { RestaurantService } from '../../../services/mocked/restaurant.service';
 import { RestaurateurMenuUpdateComponent } from '../restaurateur-menu-update/restaurateur-menu-update.component';
 import { RestaurateurItemUpdateComponent } from '../restaurateur-item-update/restaurateur-item-update.component';
 

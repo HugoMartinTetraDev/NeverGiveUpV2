@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { Order } from '../../../../models/order.model';
-import { OrderService } from '../../../../services/order.service';
+import { OrderService } from '../../../../services/mocked/order.service';
 
 @Component({
     selector: 'app-modify-order-dialog',

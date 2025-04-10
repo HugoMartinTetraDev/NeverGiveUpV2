@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RestaurantCardComponent } from '../restaurant-card/restaurant-card.component';
-import { SearchService } from '../../services/search.service';
+import { SearchService } from '../../services/mocked/search.service';
 import { Observable, map, of, combineLatest } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';

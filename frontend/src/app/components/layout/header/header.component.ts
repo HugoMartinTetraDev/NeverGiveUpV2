@@ -7,10 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule, MatMenu } from '@angular/material/menu';
-import { SearchService } from '../../../services/search.service';
-import { NotificationService, Notification } from '../../../services/notification.service';
-import { CartService } from '../../../services/cart.service';
-import { AuthService } from '../../../services/auth.service';
+import { SearchService } from '../../../services/mocked/search.service';
+import { NotificationService, Notification } from '../../../services/mocked/notification.service';
+import { CartService } from '../../../services/mocked/cart.service';
+import { AuthService } from '../../../services/mocked/auth.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 

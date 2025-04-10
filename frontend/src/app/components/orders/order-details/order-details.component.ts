@@ -6,7 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Order } from '../../../models/order.model';
-import { OrderService } from '../../../services/order.service';
+import { OrderService } from '../../../services/mocked/order.service';
 import { DeleteOrderDialogComponent } from './delete-order-dialog/delete-order-dialog.component';
 import { ModifyOrderDialogComponent } from './modify-order-dialog/modify-order-dialog.component';
 

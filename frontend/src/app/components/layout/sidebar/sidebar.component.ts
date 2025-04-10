@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../services/mocked/auth.service';
 
 @Component({
   selector: 'app-sidebar',

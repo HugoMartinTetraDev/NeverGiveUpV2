@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { Order } from '../../../models/order.model';
-import { OrderService } from '../../../services/order.service';
+import { OrderService } from '../../../services/mocked/order.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

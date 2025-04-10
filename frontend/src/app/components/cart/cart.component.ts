@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { CartService, CartItem } from '../../services/cart.service';
+import { CartService, CartItem } from '../../services/mocked/cart.service';
 import { CartDeleteDialogComponent } from './cart-delete-dialog/cart-delete-dialog.component';
 
 @Component({

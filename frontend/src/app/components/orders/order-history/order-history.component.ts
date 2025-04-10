@@ -4,7 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { OrderHistory } from '../../../models/order.model';
-import { OrderService } from '../../../services/order.service';
+import { OrderService } from '../../../services/mocked/order.service';
 
 @Component({
     selector: 'app-order-history',

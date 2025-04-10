@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Restaurant, Menu, MenuItem } from '../../models/restaurant.model';
-import { CartService } from '../../services/cart.service';
+import { CartService } from '../../services/mocked/cart.service';
 import { MenuItemDetailComponent } from '../menu-item-detail/menu-item-detail.component';
 
 @Component({

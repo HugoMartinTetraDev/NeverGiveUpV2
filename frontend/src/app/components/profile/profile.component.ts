@@ -8,7 +8,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProfileDeleteDialogComponent } from './profile-delete-dialog/profile-delete-dialog.component';
-import { NotificationService } from '../../services/notification.service';
+import { NotificationService } from '../../services/mocked/notification.service';
 
 interface UserProfile {
   firstName: string;

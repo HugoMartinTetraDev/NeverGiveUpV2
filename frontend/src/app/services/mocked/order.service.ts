@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Order, OrderHistory } from '../models/order.model';
+import { Order, OrderHistory } from '../../models/order.model';
 import { CartService } from './cart.service';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { RestaurateurOrder } from '../models/restaurateur-order.model';
+import { RestaurateurOrder } from '../../models/restaurateur-order.model';
 
 @Injectable({
   providedIn: 'root'
