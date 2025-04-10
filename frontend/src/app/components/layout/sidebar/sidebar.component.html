@@ -1,9 +1,4 @@
 <mat-nav-list>
-  <!-- Débogage des rôles -->
-  <div class="debug-roles" *ngIf="debugRoles" style="padding: 8px; font-size: 10px; color: #666; border-bottom: 1px solid #eee;">
-    Rôles détectés: {{debugRoles}}
-  </div>
-
   <!-- Section Client -->
   <ng-container *appHasRole="[UserRole.CLIENT, UserRole.ADMIN]">
     <a mat-list-item>Client</a>

@@ -19,10 +19,7 @@ export class SidebarComponent implements OnInit {
   // Pour accès au enum UserRole dans le template
   UserRole = UserRole;
   
-  // Pour le débogage
-  debugRoles: string = '';
-  
-  // Propriétés pour suivre les rôles spécifiques (utile pour les tests)
+  // Propriétés pour suivre les rôles spécifiques
   hasClientRole = false;
   hasRestaurateurRole = false;
   hasLivreurRole = false;
@@ -38,41 +35,22 @@ export class SidebarComponent implements OnInit {
     // S'abonner aux changements d'utilisateur
     this.authService.currentUser$.subscribe({
       next: (user) => {
-        console.log("Utilisateur actuel:", user);
-        this.updateRoleDebugInfo();
         this.updateRoleFlags();
       }
     });
 
     // Mise à jour initiale des rôles
-    this.updateRoleDebugInfo();
     this.updateRoleFlags();
   }
 
   /**
-   * Met à jour les informations de débogage sur les rôles
-   */
-  private updateRoleDebugInfo(): void {
-    const roles = this.authorizationService.getUserRoles();
-    this.debugRoles = JSON.stringify(roles);
-    console.log("Rôles actuels:", roles);
-  }
-
-  /**
-   * Met à jour les drapeaux de rôles spécifiques (pour tester/débogage)
+   * Met à jour les drapeaux de rôles spécifiques
    */
   private updateRoleFlags(): void {
     this.hasClientRole = this.authorizationService.hasRole(UserRole.CLIENT);
     this.hasRestaurateurRole = this.authorizationService.hasRole(UserRole.RESTAURATEUR);
     this.hasLivreurRole = this.authorizationService.hasRole(UserRole.LIVREUR);
     this.hasAdminRole = this.authorizationService.hasRole(UserRole.ADMIN);
-    
-    console.log("Drapeaux de rôles:", {
-      client: this.hasClientRole,
-      restaurateur: this.hasRestaurateurRole,
-      livreur: this.hasLivreurRole,
-      admin: this.hasAdminRole
-    });
   }
 
   /**
