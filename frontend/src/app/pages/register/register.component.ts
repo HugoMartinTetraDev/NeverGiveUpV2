@@ -26,6 +26,16 @@ export class RegisterComponent implements OnInit {
   // Flag for development features
   isDevelopmentMode = isDevMode();
   
+  /**
+   * Formate le message d'erreur pour l'affichage HTML
+   */
+  formatErrorMessage(message: string): string {
+    if (!message) return '';
+    
+    // Remplacer les sauts de ligne par des balises <br>
+    return message.replace(/\n/g, '<br>');
+  }
+  
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -45,7 +55,8 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       phoneNumber: ['', [Validators.pattern(/^\+?[0-9]{10,12}$/)]],
-      address: [''],
+      address: ['', [Validators.required]],
+      birthDate: ['', [Validators.required]],
       city: [''],
       zipCode: [''],
       roles: this.formBuilder.array([]),
@@ -65,7 +76,7 @@ export class RegisterComponent implements OnInit {
       delivererPhoneNumber: ['', [Validators.required, Validators.pattern(/^\+?[0-9]{10,12}$/)]],
       delivererSiretNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{14}$/)]],
       accountHolderName: ['', [Validators.required]],
-      iban: ['', [Validators.required, Validators.pattern(/^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/)]]
+      iban: ['', [Validators.required, Validators.pattern(/^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/)]],
     }, {
       validators: this.passwordMatchValidator
     });
@@ -176,8 +187,13 @@ export class RegisterComponent implements OnInit {
     
     if (this.registerForm.invalid || this.rolesFormArray.length === 0) {
       if (this.rolesFormArray.length === 0) {
-        this.errorMessage = 'Please select at least one role';
+        this.errorMessage = 'Veuillez sélectionner au moins un type de compte';
+      } else {
+        this.errorMessage = 'Veuillez corriger les erreurs dans le formulaire avant de continuer';
       }
+      
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      this.markFormGroupTouched(this.registerForm);
       
       // Log validation errors for debugging
       Object.keys(this.registerForm.controls).forEach(key => {
@@ -195,6 +211,29 @@ export class RegisterComponent implements OnInit {
     
     const formValue = { ...this.registerForm.value };
     delete formValue.confirmPassword;
+    
+    // S'assurer que la date de naissance est au format YYYY-MM-DD
+    if (formValue.birthDate) {
+      try {
+        // Si la date est déjà un objet Date ou une chaîne de caractères
+        const birthDate = new Date(formValue.birthDate);
+        
+        // Vérifier que la date est valide
+        if (isNaN(birthDate.getTime())) {
+          throw new Error('Date de naissance invalide');
+        }
+        
+        // Formater en YYYY-MM-DD
+        const year = birthDate.getFullYear();
+        const month = String(birthDate.getMonth() + 1).padStart(2, '0');
+        const day = String(birthDate.getDate()).padStart(2, '0');
+        formValue.birthDate = `${year}-${month}-${day}`;
+      } catch (error) {
+        this.isLoading = false;
+        this.errorMessage = 'Le format de la date de naissance est invalide. Utilisez le format JJ/MM/AAAA.';
+        return;
+      }
+    }
     
     // Remove unused fields based on selected roles
     if (!this.showRestaurantOwnerFields) {
@@ -263,5 +302,18 @@ export class RegisterComponent implements OnInit {
     console.groupEnd();
     
     console.groupEnd();
+  }
+
+  /**
+   * Marque tous les contrôles d'un FormGroup comme touchés
+   */
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 } 

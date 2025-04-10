@@ -83,7 +83,7 @@ h2 {
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
     
     &:focus {
       outline: none;
@@ -93,7 +93,27 @@ h2 {
     
     &.is-invalid {
       border-color: #ff3b30;
+      background-color: #fff8f8;
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
     }
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-2px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(2px, 0, 0);
   }
 }
 
@@ -101,6 +121,7 @@ h2 {
   color: #ff3b30;
   font-size: 0.85rem;
   margin-top: 5px;
+  font-weight: 500;
 }
 
 .roles-section {
@@ -229,11 +250,27 @@ h2 {
 
 .error-alert {
   background-color: #ffeeee;
-  color: #ff3b30;
-  padding: 10px;
-  border-radius: 6px;
+  border-left: 4px solid #ff3b30;
+  color: #cc0000;
+  padding: 15px;
+  border-radius: 4px;
   margin-bottom: 20px;
-  text-align: center;
+  font-size: 0.9rem;
+  
+  .error-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    
+    i {
+      margin-right: 5px;
+    }
+  }
+  
+  .error-content {
+    line-height: 1.5;
+  }
 }
 
 .terms-agreement {

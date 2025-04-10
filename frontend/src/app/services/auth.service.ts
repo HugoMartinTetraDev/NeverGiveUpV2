@@ -42,6 +42,15 @@ export class AuthService {
       .pipe(
         tap(response => this.handleAuthentication(response)),
         catchError(error => {
+          console.error('Erreur d\'inscription détaillée:', error);
+          
+          // Enrichir l'erreur avec un message plus explicite si nécessaire
+          if (error.status === 400) {
+            if (!error.error.message) {
+              error.error.message = 'Veuillez vérifier les informations saisies et réessayer.';
+            }
+          }
+          
           return throwError(() => error);
         })
       );
