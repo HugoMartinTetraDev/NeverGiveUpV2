@@ -1,0 +1,26 @@
+<div class="confirmation-container">
+    <mat-icon class="success-icon">check_circle</mat-icon>
+    <h2>Commande confirmée</h2>
+    <p>Votre commande a été reçue.</p>
+    
+    <div class="order-details">
+      <div class="detail-row">
+        <span>DATE:</span>
+        <span>{{ orderDate | date:'longDate' }}</span>
+      </div>
+      <div class="detail-row">
+        <span>TOTAL:</span>
+        <span>{{ total }}€</span>
+      </div>
+      <div class="detail-row">
+        <span>MÉTHODE DE PAIEMENT:</span>
+        <span>Carte bancaire</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="goToOrders()">
+        Voir mes commandes
+      </button>
+    </div>
+  </div>

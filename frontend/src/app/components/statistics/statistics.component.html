@@ -1,0 +1,65 @@
+<div class="statistics-container">
+  <h1>Statistiques</h1>
+
+  <div class="period-selector">
+    <mat-form-field>
+      <mat-label>Période</mat-label>
+      <mat-select [value]="selectedPeriod" (selectionChange)="onPeriodChange($event.value)">
+        <mat-option value="current">Ce mois-ci</mat-option>
+        <mat-option value="last3">3 derniers mois</mat-option>
+        <mat-option value="last6">6 derniers mois</mat-option>
+        <mat-option value="year">Cette année</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="stats-cards">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <h2>Chiffre d'affaire</h2>
+        <p class="stat-value">+ {{statistics.currentMonth.revenue | number:'1.2-2'}} €</p>
+        <p class="stat-period">{{getPeriodLabel()}}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <h2>Nombre de commandes</h2>
+        <p class="stat-value">{{statistics.currentMonth.orderCount}}</p>
+        <p class="stat-period">{{getPeriodLabel()}}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <h2>Valeur moyenne du ticket</h2>
+        <p class="stat-value">{{statistics.currentMonth.averageTicket | number:'1.2-2'}} €</p>
+        <p class="stat-period">{{getPeriodLabel()}}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="chart-card">
+    <mat-card-content>
+      <h2>Analyse des revenus</h2>
+      <div class="chart-container" *ngIf="!isLoading">
+        <ngx-charts-line-chart
+          [results]="chartData"
+          [xAxis]="showXAxis"
+          [yAxis]="showYAxis"
+          [legend]="showLegend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          [scheme]="colorScheme"
+          [view]="view"
+          (select)="onSelect($event)">
+        </ngx-charts-line-chart>
+      </div>
+      <div class="loading-spinner" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

@@ -1,0 +1,45 @@
+.cart-delete-dialog {
+  padding: 1rem;
+  min-width: 300px;
+  max-width: 500px;
+  border-radius: 20px;
+
+  h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin: 2rem 0;
+    text-align: center;
+  }
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  margin-top: 2rem;
+
+  button {
+    flex: 1;
+    border-radius: 30px;
+    padding: 0.75rem 0;
+    font-weight: 500;
+  }
+
+  .confirm-btn {
+    background-color: #3f51b5;
+    color: white;
+  }
+
+  .cancel-btn {
+    background-color: #e0e0e0;
+    color: #333;
+  }
+} 

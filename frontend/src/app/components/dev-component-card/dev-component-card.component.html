@@ -1,0 +1,13 @@
+<mat-card class="component-card">
+    <img mat-card-image [src]="component.image" [alt]="component.name">
+    <mat-card-content>
+      <h2>{{ component.name }}</h2>
+      <p class="description">{{ component.description }}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button color="primary" [href]="component.githubLink" target="_blank">
+        <mat-icon>code</mat-icon>
+        GitHub
+      </a>
+    </mat-card-actions>
+  </mat-card>

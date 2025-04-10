@@ -1,0 +1,48 @@
+.restaurant-card {
+    max-width: 350px;
+    margin: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    mat-card-content {
+      padding: 16px;
+    }
+  }
+
+  img {
+    height: 200px;
+    object-fit: cover;
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .location {
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0 0 16px 0;
+    font-size: 14px;
+  }
+
+  .description {
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+  }
+
+  .delivery-info {
+    font-weight: 500;
+    color: #1976d2;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  mat-card-actions {
+    padding: 8px 16px;
+  }

@@ -1,0 +1,25 @@
+.delete-dialog {
+    padding: 20px;
+    text-align: center;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 20px 0;
+    font-size: 16px;
+  }
+
+  mat-dialog-actions {
+    justify-content: center;
+    gap: 16px;
+    padding: 20px 0 0;
+  }
+
+  button {
+    min-width: 120px;
+  }

@@ -1,0 +1,37 @@
+.order-card, .no-order-card {
+    max-width: 800px;
+    margin: 20px auto;
+}
+.no-order-card {
+    text-align: center;
+    padding: 20px;
+}
+.no-order-card p {
+    font-size: 1.2em;
+    color: #666;
+}
+.price {
+    float: right;
+    font-weight: bold;
+}
+.total-section {
+    margin: 20px 0;
+    p {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+    }
+    .total {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+}
+.status-section {
+    margin: 20px 0;
+}
+mat-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px;
+}

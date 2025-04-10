@@ -1,0 +1,90 @@
+<div class="profile-container">
+  <h1>Compte</h1>
+
+  <div class="profile-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.firstName" placeholder="ex : Jhon" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.lastName" placeholder="ex : Doe" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.birthDate" placeholder="ex : 01/01/2020" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.email" placeholder="ex : cesi@cesi.Fr" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.password" type="password" placeholder="ex : **********" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Adresse</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.address" placeholder="ex : 24 Le Paquebot" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>N° de téléphone</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.phoneNumber" placeholder="ex : +33 6 00 00 00 00" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Raison sociale (Nom du restaurant)</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.businessName" placeholder="ex : L'escale" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>N° de SIRET</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.siretNumber" placeholder="ex : 012 345 678 90123" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom du titulaire du compte</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.accountHolder" placeholder="ex : Jhon DOE" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>IBAN</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.iban" placeholder="ex : FR76 3000 4028 3798 7654 3210 943" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Frais de livraison</mat-label>
+      <input matInput [(ngModel)]="restaurateurProfile.deliveryFee" placeholder="ex : 6.00 €" readonly>
+      <span matSuffix>€</span>
+    </mat-form-field>
+
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="onModify()">MODIFIER</button>
+      <button mat-raised-button color="warn" (click)="onDelete()">SUPPRIMER</button>
+    </div>
+  </div>
+
+  <h2>Parrainage</h2>
+  <div class="sponsorship-section">
+    <div class="referral-code">
+      <p>Mon code : {{ restaurateurProfile.referralCode }}</p>
+    </div>
+
+    <div class="referral-input">
+      <p>Rentrer le code d'un restaurateur :</p>
+      <mat-form-field appearance="outline">
+        <input matInput [(ngModel)]="friendReferralCode" placeholder="ex : 1234-5678">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="onConfirmReferral()">CONFIRMER</button>
+    </div>
+
+    <div class="referral-message" *ngIf="referralMessage" [class.success]="referralSuccess" [class.error]="!referralSuccess">
+      {{ referralMessage }}
+    </div>
+  </div>
+</div> 

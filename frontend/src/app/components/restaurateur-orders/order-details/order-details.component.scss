@@ -1,0 +1,32 @@
+.order-details-container {
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  mat-card {
+    padding: 16px;
+  }
+  
+  mat-card-title {
+    color: #3f51b5;
+    font-size: 1.5rem;
+  }
+  
+  .order-info {
+    margin: 16px 0;
+  }
+  
+  .order-actions {
+    margin-top: 16px;
+  }
+  
+  mat-card-actions {
+    display: flex;
+    gap: 8px;
+    padding: 16px;
+  }
+  
+  button {
+    margin-right: 8px;
+  }

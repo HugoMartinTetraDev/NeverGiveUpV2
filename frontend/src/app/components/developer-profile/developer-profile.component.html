@@ -1,0 +1,35 @@
+<div class="profile-container">
+  <h1>Compte</h1>
+
+  <div class="profile-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput [(ngModel)]="developerProfile.firstName" placeholder="ex : Jhon" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput [(ngModel)]="developerProfile.lastName" placeholder="ex : Doe" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [(ngModel)]="developerProfile.birthDate" placeholder="ex : 01/01/2020" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput [(ngModel)]="developerProfile.email" placeholder="ex : cesi@cesi.Fr" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [(ngModel)]="developerProfile.password" type="password" placeholder="ex : **********" readonly>
+    </mat-form-field>
+
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="onModify()">MODIFIER</button>
+      <button mat-raised-button color="warn" (click)="onDelete()">SUPPRIMER</button>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,118 @@
+.order-view-container {
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.order-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.order-header {
+    margin-bottom: 24px;
+
+    h2 {
+        font-size: 18px;
+        font-weight: 500;
+        margin: 0;
+        color: rgba(0, 0, 0, 0.87);
+    }
+
+    .date {
+        margin: 8px 0 0;
+        color: rgba(0, 0, 0, 0.6);
+    }
+}
+
+.order-items {
+    margin-bottom: 24px;
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        color: rgba(0, 0, 0, 0.87);
+
+        .item-details {
+            display: flex;
+            gap: 12px;
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+
+        .price {
+            font-weight: 500;
+        }
+    }
+}
+
+.order-summary {
+    margin: 24px 0;
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px 0;
+        color: rgba(0, 0, 0, 0.87);
+
+        &.total {
+            font-weight: 600;
+            font-size: 18px;
+            margin-top: 16px;
+        }
+    }
+
+    .summary-label {
+        line-height: 1.5;
+    }
+
+    .summary-value {
+        font-weight: 500;
+    }
+}
+
+.order-status {
+    margin-top: 24px;
+
+    h3 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 16px;
+        color: rgba(0, 0, 0, 0.87);
+    }
+
+    .status-timeline {
+        .status-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 12px;
+            color: rgba(0, 0, 0, 0.87);
+
+            .status-time {
+                min-width: 80px;
+                font-weight: 500;
+            }
+
+            .status-label {
+                color: rgba(0, 0, 0, 0.6);
+            }
+        }
+    }
+}
+
+mat-divider {
+    margin: 24px 0;
+}

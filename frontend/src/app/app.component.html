@@ -1,0 +1,26 @@
+<!-- Main Layout -->
+<mat-sidenav-container class="sidenav-container">
+  <!-- Navigation Sidebar -->
+  <mat-sidenav #sidenav mode="over" class="sidenav">
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+
+  <!-- Cart Sidebar -->
+  <mat-sidenav #cartSidenav mode="over" position="end" [opened]="isCartVisible" (closed)="toggleCart()">
+    <app-cart></app-cart>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content>
+    <!-- Header -->
+    <app-header 
+      (menuClick)="sidenav.toggle()"
+      (cartClick)="toggleCart()"
+    ></app-header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

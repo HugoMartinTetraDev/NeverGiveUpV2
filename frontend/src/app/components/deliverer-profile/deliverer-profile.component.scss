@@ -1,0 +1,108 @@
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+
+  h1 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    color: #333;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #f5f5f5;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+
+    button {
+      flex: 1;
+    }
+  }
+}
+
+.sponsorship-section {
+  background-color: #f5f5f5;
+  padding: 24px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .referral-code {
+    margin-bottom: 24px;
+    p {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+
+  .referral-input {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    button {
+      align-self: flex-start;
+    }
+  }
+
+  .referral-message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 500;
+
+    &.success {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &.error {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .profile-form,
+  .sponsorship-section {
+    padding: 16px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+} 

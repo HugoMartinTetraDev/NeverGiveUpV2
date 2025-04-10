@@ -1,0 +1,26 @@
+.delete-dialog {
+  padding: 1rem;
+  min-width: 300px;
+  max-width: 500px;
+
+  h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+
+  button {
+    flex: 1;
+  }
+} 

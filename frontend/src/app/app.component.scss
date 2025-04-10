@@ -1,0 +1,23 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  min-width: 250px;
+}
+
+.main-content {
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 64px);
+  margin-top: 64px; // Height of the toolbar
+}
+
+// Make the header fixed
+::ng-deep .mat-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}

@@ -1,0 +1,53 @@
+<mat-card *ngIf="currentOrder" class="order-card">
+    <mat-card-header>
+        <mat-card-title>Commande en cours</mat-card-title>
+        <mat-card-subtitle>
+            ID de la commande : {{ currentOrder.id }}
+            <br>
+            {{ currentOrder.date | date:'dd/MM/yyyy HH:mm:ss' }}
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item *ngFor="let item of currentOrder.items">
+                {{ item.quantity }}x {{ item.name }}
+                <span class="price">{{ item.price | currency:'EUR' }}</span>
+            </mat-list-item>
+        </mat-list>
+
+        <mat-divider></mat-divider>
+
+        <div class="total-section">
+            <p>Vente de produits alimentaire (TVA comprise)
+                <span class="price">{{ currentOrder.subtotal | currency:'EUR' }}</span>
+            </p>
+            <p>Frais Pop-Eat ({{ currentOrder.fees.percentage }}% | TVA comprise)
+                <span class="price">{{ currentOrder.fees.amount | currency:'EUR' }}</span>
+            </p>
+            <p class="total">Total
+                <span class="price">{{ currentOrder.total | currency:'EUR' }}</span>
+            </p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="status-section">
+            <h3>Statut de la commande</h3>
+            <div *ngFor="let status of currentOrder.status">
+                <p>{{ status.timestamp }} - {{ status.status }}</p>
+            </div>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="onModify()">MODIFIER</button>
+        <button mat-raised-button color="warn" (click)="onDelete()">SUPPRIMER</button>
+    </mat-card-actions>
+</mat-card>
+
+<mat-card *ngIf="!currentOrder" class="no-order-card">
+    <mat-card-content>
+        <p>Aucune commande en cours</p>
+    </mat-card-content>
+</mat-card>

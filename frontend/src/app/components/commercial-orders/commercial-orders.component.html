@@ -1,0 +1,80 @@
+<div class="orders-container">
+    <div>
+    <div class="stats-cards">
+  <mat-card class="stat-card">
+    <mat-card-content>
+      <h2>Chiffre d'affaire en cours</h2>
+      <p class="stat-value">+ {{statistics.currentMonth.revenue | number:'1.2-2'}} €</p>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card">
+    <mat-card-content>
+      <h2>Nombre de commandes en cours</h2>
+      <p class="stat-value">{{statistics.currentMonth.orderCount}}</p>
+    </mat-card-content>
+  </mat-card>
+    </div>
+
+
+
+    <div class="header">
+      <h1>Commandes</h1>
+    </div>
+
+    <!-- Order Details Section -->
+    <div class="order-details-container" *ngIf="selectedOrder">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Détails de la commande #{{ selectedOrder.id }}</mat-card-title>
+          <mat-card-subtitle>{{ selectedOrder.date | date:'dd/MM/yyyy HH:mm:ss' }}</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="order-info">
+            <p><strong>Articles:</strong> {{ getOrderItems(selectedOrder) }}</p>
+            <p><strong>Statut:</strong> {{ getOrderStatus(selectedOrder) }}</p>
+            <p><strong>Montant:</strong> {{ selectedOrder.total | currency:'EUR' }}</p>
+          </div>
+          
+          <mat-divider></mat-divider>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-raised-button (click)="hideOrderDetails()">FERMER</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <table mat-table [dataSource]="orders" class="mat-elevation-z2 orders-table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
+        <td mat-cell *matCellDef="let order">{{ order.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="articles">
+        <th mat-header-cell *matHeaderCellDef>Articles</th>
+        <td mat-cell *matCellDef="let order">{{ getOrderItems(order) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let order">{{ getOrderStatus(order) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let order">
+          <button mat-raised-button color="primary" (click)="showOrderDetails(order)">DÉTAILS</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>

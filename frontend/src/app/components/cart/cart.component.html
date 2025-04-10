@@ -1,0 +1,32 @@
+<div class="cart-container">
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <div class="item-content">
+        <img [src]="item.image || 'assets/images/burger.png'" [alt]="item.name" class="item-image" onerror="this.src='assets/images/burger.png'">
+        <div class="item-details">
+            <div class="item-info">
+              <h3>{{ item.name }}</h3>
+              <p class="restaurant">Restaurateur</p>
+            </div>
+            <div class="item-controls">
+              <button mat-icon-button (click)="decreaseQuantity(item)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity">{{ item.quantity }}</span>
+              <button mat-icon-button (click)="increaseQuantity(item)">
+                <mat-icon>add</mat-icon>
+              </button>
+              <span class="price">{{ item.price * item.quantity }}€</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="cartItems.length === 0" class="empty-cart">
+        <p>Votre panier est vide</p>
+      </div>
+      <div *ngIf="cartItems.length > 0" class="cart-actions">
+        <button mat-raised-button color="warn" class="cancel-btn" (click)="openDeleteDialog()">ANNULER</button>
+        <button mat-raised-button color="primary" class="order-btn" (click)="proceedToCheckout()">COMMANDER</button>
+      </div>
+    </div>
+  </div>

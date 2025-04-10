@@ -1,0 +1,61 @@
+<div class="checkout-container">
+    <h2>Paiement</h2>
+    
+    <div class="order-summary">
+      <h3>Récapitulatif de la commande</h3>
+      <div class="summary-item" *ngFor="let item of cartItems">
+        <span>{{ item.name }} x {{ item.quantity }}</span>
+        <span>{{ item.price * item.quantity }}€</span>
+      </div>
+      <div class="summary-total">
+        <span>Total</span>
+        <span>{{ total }}€</span>
+      </div>
+    </div>
+
+    <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+      <div class="card-element">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Numéro de carte</mat-label>
+          <input matInput formControlName="cardNumber" placeholder="1234 1234 1234 1234">
+        </mat-form-field>
+
+        <div class="card-details">
+          <mat-form-field appearance="outline">
+            <mat-label>Date d'expiration</mat-label>
+            <input matInput formControlName="expiryDate" placeholder="MM/YY">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CVC</mat-label>
+            <input matInput formControlName="cvc" placeholder="123">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom sur la carte</mat-label>
+          <input matInput formControlName="cardholderName">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Pays</mat-label>
+          <mat-select formControlName="country">
+            <mat-option value="FR">France</mat-option>
+            <mat-option value="ES">Espagne</mat-option>
+            <mat-option value="DE">Allemagne</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="saveCard">
+          Sauvegarder ma carte pour mes prochains achats
+        </mat-checkbox>
+      </div>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="onCancel()">Annuler</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="!paymentForm.valid">
+          Payer {{ total }}€
+        </button>
+      </div>
+    </form>
+  </div>

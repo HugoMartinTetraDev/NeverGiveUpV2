@@ -1,0 +1,35 @@
+<div class="profile-container">
+  <h1>Modifications des informations</h1>
+
+  <div class="profile-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput [(ngModel)]="developerProfile.firstName" placeholder="ex : Jhon">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput [(ngModel)]="developerProfile.lastName" placeholder="ex : Doe">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [(ngModel)]="developerProfile.birthDate" placeholder="ex : 01/01/2020">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput [(ngModel)]="developerProfile.email" placeholder="ex : cesi@cesi.Fr">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [(ngModel)]="developerProfile.password" type="password" placeholder="ex : **********">
+    </mat-form-field>
+
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="onSave()">SAUVEGARDER</button>
+      <button mat-raised-button (click)="onCancel()">ANNULER</button>
+    </div>
+  </div>
+</div> 

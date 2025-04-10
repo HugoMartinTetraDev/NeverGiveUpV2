@@ -1,0 +1,58 @@
+<div class="profile-container">
+  <h1>Compte</h1>
+
+  <div class="profile-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput [(ngModel)]="userProfile.firstName" placeholder="ex : Jhon" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput [(ngModel)]="userProfile.lastName" placeholder="ex : Doe" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de naissance</mat-label>
+      <input matInput [(ngModel)]="userProfile.birthDate" placeholder="ex : 01/01/2020" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput [(ngModel)]="userProfile.email" placeholder="ex : cesi@cesi.Fr" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput [(ngModel)]="userProfile.password" type="password" placeholder="ex : **************" readonly>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Adresse</mat-label>
+      <input matInput [(ngModel)]="userProfile.address" placeholder="ex : 24 Le Paquebot" readonly>
+    </mat-form-field>
+
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="onModify()">MODIFIER</button>
+      <button mat-raised-button color="warn" (click)="onDelete()">SUPPRIMER</button>
+    </div>
+  </div>
+
+  <h2>Parrainage</h2>
+  <div class="referral-section">
+    <p>Mon code : {{ userProfile.referralCode }}</p>
+    
+    <mat-form-field appearance="outline">
+      <mat-label>Rentrer le code d'un ami</mat-label>
+      <input matInput [(ngModel)]="friendReferralCode" placeholder="ex : 1458-9632">
+    </mat-form-field>
+
+    <div class="referral-feedback" *ngIf="referralMessage">
+      <p [class.success]="referralSuccess" [class.error]="!referralSuccess">
+        {{ referralMessage }}
+      </p>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="onConfirmReferral()">CONFIRMER</button>
+  </div>
+</div> 

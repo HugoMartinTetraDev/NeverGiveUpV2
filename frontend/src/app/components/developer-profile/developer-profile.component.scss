@@ -1,0 +1,54 @@
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+  }
+
+  .profile-form {
+    background-color: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      justify-content: flex-start;
+
+      button {
+        min-width: 120px;
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 1rem;
+
+    .profile-form {
+      padding: 1rem;
+
+      .button-group {
+        flex-direction: column;
+        
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+} 
