@@ -50,14 +50,20 @@ export class ApiService {
     
     // Assurez-vous d'avoir les headers d'autorisation si disponibles
     const token = localStorage.getItem('auth_token');
-    const authHeaders = headers || new HttpHeaders();
+    let requestHeaders = headers || new HttpHeaders();
     
     if (token) {
-      const headersWithAuth = authHeaders.set('Authorization', `Bearer ${token}`);
-      return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { headers: headersWithAuth });
+      console.log('Token trouvé, ajout à la requête');
+      requestHeaders = requestHeaders.set('Authorization', `Bearer ${token}`);
+      console.log('Headers finaux:', requestHeaders.keys());
+    } else {
+      console.warn('Token non trouvé pour la requête PUT');
     }
     
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { headers });
+    // Toujours utiliser les headers avec le token s'il est disponible
+    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { 
+      headers: requestHeaders 
+    });
   }
 
   /**

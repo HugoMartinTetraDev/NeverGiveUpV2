@@ -23,6 +23,12 @@ export interface User {
   profileImage?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  // Champs spécifiques au livreur
+  siretNumber?: string; // Alias utilisé côté client pour siret
+  siret?: string;  // Nom du champ utilisé dans le backend
+  accountHolder?: string;  // Champ utilisé uniquement côté client, non stocké dans le backend
+  iban?: string;
+  referredBy?: string;
 }
 
 export interface AuthResponse {

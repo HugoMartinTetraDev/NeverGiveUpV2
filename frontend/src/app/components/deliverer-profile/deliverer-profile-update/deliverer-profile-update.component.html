@@ -1,30 +1,39 @@
 <div class="profile-container">
   <h1>Compte</h1>
 
-  <div class="profile-form">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div class="profile-form" *ngIf="!isLoading">
     <mat-form-field appearance="outline">
       <mat-label>Prénom</mat-label>
       <input matInput [(ngModel)]="delivererProfile.firstName" placeholder="ex : Jhon">
+      <mat-error *ngIf="!delivererProfile.firstName">Le prénom est requis</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Nom</mat-label>
       <input matInput [(ngModel)]="delivererProfile.lastName" placeholder="ex : Doe">
+      <mat-error *ngIf="!delivererProfile.lastName">Le nom est requis</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Date de naissance</mat-label>
-      <input matInput [(ngModel)]="delivererProfile.birthDate" placeholder="ex : 01/01/2020">
+      <input matInput [(ngModel)]="delivererProfile.birthDate" placeholder="ex : 01/01/1990">
+      <mat-hint>Format: JJ/MM/AAAA (par exemple 01/01/1990)</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>E-mail</mat-label>
-      <input matInput [(ngModel)]="delivererProfile.email" placeholder="ex : cesi@cesi.Fr">
+      <input matInput [(ngModel)]="delivererProfile.email" placeholder="ex : cesi@cesi.Fr" type="email">
+      <mat-error *ngIf="!delivererProfile.email">L'email est requis</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Mot de passe</mat-label>
       <input matInput [(ngModel)]="delivererProfile.password" type="password" placeholder="ex : **********">
+      <mat-hint>Laissez vide pour ne pas modifier le mot de passe</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -40,6 +49,7 @@
     <mat-form-field appearance="outline">
       <mat-label>N° de SIRET</mat-label>
       <input matInput [(ngModel)]="delivererProfile.siretNumber" placeholder="ex : 012 345 678 90123">
+      <mat-hint>14 chiffres sans espaces</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -53,8 +63,8 @@
     </mat-form-field>
 
     <div class="button-group">
-      <button mat-raised-button color="primary" (click)="onSave()">SAUVEGARDER</button>
-      <button mat-raised-button (click)="onCancel()">ANNULER</button>
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="isLoading">ENREGISTRER</button>
+      <button mat-raised-button (click)="onCancel()" [disabled]="isLoading">ANNULER</button>
     </div>
   </div>
 </div> 

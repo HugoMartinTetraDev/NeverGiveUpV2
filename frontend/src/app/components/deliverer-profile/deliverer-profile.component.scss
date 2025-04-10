@@ -15,6 +15,13 @@
   }
 }
 
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
 .profile-form {
   display: flex;
   flex-direction: column;

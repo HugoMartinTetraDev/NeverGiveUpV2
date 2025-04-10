@@ -1,7 +1,11 @@
 <div class="profile-container">
   <h1>Compte</h1>
 
-  <div class="profile-form">
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <div class="profile-form" *ngIf="!isLoading">
     <mat-form-field appearance="outline">
       <mat-label>Prénom</mat-label>
       <input matInput [(ngModel)]="delivererProfile.firstName" placeholder="ex : Jhon" readonly>
@@ -59,7 +63,7 @@
   </div>
 
   <h2>Parrainage</h2>
-  <div class="sponsorship-section">
+  <div class="sponsorship-section" *ngIf="!isLoading">
     <div class="referral-code">
       <p>Mon code : {{ delivererProfile.referralCode }}</p>
     </div>
