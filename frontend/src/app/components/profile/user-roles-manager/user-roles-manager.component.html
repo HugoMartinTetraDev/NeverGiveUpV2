@@ -1,0 +1,37 @@
+<div class="roles-manager-container">
+  <h3>Gestion des rôles</h3>
+  
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  
+  <div class="roles-list">
+    <div *ngFor="let role of allRoles" class="role-item">
+      <div class="role-checkbox">
+        <input type="checkbox" 
+               [id]="'role-' + role" 
+               [checked]="hasRole(role)"
+               (change)="onRoleToggle(role, ($event.target as HTMLInputElement).checked)">
+        <label [for]="'role-' + role">{{ role }}</label>
+      </div>
+      
+      <div class="role-actions" *ngIf="hasRole(role)">
+        <button 
+          class="primary-role-btn" 
+          [class.active]="user.primaryRole === role"
+          (click)="setPrimaryRole(role)">
+          {{ user.primaryRole === role ? 'Rôle principal' : 'Définir comme principal' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="role-info">
+    <p>
+      <strong>Votre rôle principal actuel:</strong> {{ user.primaryRole || (user.roles.length > 0 ? user.roles[0] : 'Aucun') }}
+    </p>
+    <p class="help-text">
+      Le rôle principal détermine votre interface par défaut lors de la connexion.
+      <br>Vous devez avoir au moins un rôle.
+    </p>
+  </div>
+</div>

@@ -79,10 +79,15 @@ export class UsersService {
 
   // Admin methods for user management
   async findAllUsers(role?: Role) {
-    const where = role ? { role } : {};
+    const where = role 
+      ? { userRoles: { some: { role } } } 
+      : {};
     
     const users = await this.prisma.user.findMany({
       where,
+      include: {
+        userRoles: true
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -90,25 +95,44 @@ export class UsersService {
 
     return users.map(user => {
       const { password, ...result } = user;
-      return result;
+      // Transformer les userRoles en array de rôles pour la compatibilité
+      return { 
+        ...result, 
+        roles: user.userRoles.map(ur => ur.role) 
+      };
     });
   }
 
   async updateUserStatus(id: string, status: UserStatus) {
-    const user = await this.findOne(id);
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      include: { userRoles: true }
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    // Vérifier si l'utilisateur a un rôle admin
+    const isAdmin = user.userRoles.some(ur => ur.role === Role.ADMIN);
 
     // Prevent updating status of ADMIN users
-    if (user.role === Role.ADMIN) {
+    if (isAdmin) {
       throw new ForbiddenException('Cannot update status of admin users');
     }
 
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: { status },
+      include: { userRoles: true }
     });
 
     const { password, ...result } = updatedUser;
-    return result;
+    // Transformer les userRoles en array de rôles pour la compatibilité
+    return { 
+      ...result, 
+      roles: updatedUser.userRoles.map(ur => ur.role) 
+    };
   }
 
   async getNotifications(userId: string) {

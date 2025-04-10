@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -8,8 +8,12 @@ import { environment } from '../../environments/environment';
 })
 export class ApiService {
   private apiUrl = environment.apiUrl;
+  private httpHandler: HttpHandler;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Récupérer le HttpHandler pour les appels directs sans intercepteurs
+    this.httpHandler = http instanceof HttpHandler ? http : (http as any).handler;
+  }
 
   /**
    * Exécute une requête GET
@@ -63,5 +67,27 @@ export class ApiService {
    */
   delete<T>(endpoint: string, headers?: HttpHeaders): Observable<T> {
     return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, { headers });
+  }
+
+  /**
+   * Effectue une requête PATCH
+   */
+  patch<T>(endpoint: string, data: any): Observable<T> {
+    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data);
+  }
+
+  /**
+   * Effectue une requête HTTP directe sans passer par les intercepteurs
+   * Utilisé principalement pour les logs afin d'éviter les boucles infinies
+   */
+  sendDirectRequest<T>(request: HttpRequest<any>): Observable<T> {
+    // Modifier l'URL pour inclure l'URL de base de l'API si nécessaire
+    if (!request.url.startsWith('http')) {
+      const url = `${this.apiUrl}/${request.url}`;
+      request = request.clone({ url });
+    }
+    
+    // Exécuter la requête directement avec le handler, sans passer par les intercepteurs
+    return this.httpHandler.handle(request) as Observable<any>;
   }
 } 

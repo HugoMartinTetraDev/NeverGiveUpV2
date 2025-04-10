@@ -101,7 +101,7 @@ export class RegisterComponent implements OnInit {
 
   updateConditionalValidators(roles: UserRole[]): void {
     // Check if roles contains restaurant owner
-    const isRestaurantOwner = roles.includes(UserRole.RESTAURANT_OWNER);
+    const isRestaurantOwner = roles.includes(UserRole.RESTAURATEUR);
     this.showRestaurantOwnerFields = isRestaurantOwner;
     
     // Update validators for restaurant owner fields
@@ -124,7 +124,7 @@ export class RegisterComponent implements OnInit {
     });
     
     // Check if roles contains deliverer
-    const isDeliverer = roles.includes(UserRole.DELIVERER);
+    const isDeliverer = roles.includes(UserRole.LIVREUR);
     this.showDelivererFields = isDeliverer;
     
     // Update validators for deliverer fields
@@ -201,77 +201,75 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  /**
+   * Soumission du formulaire d'inscription
+   */
   onSubmit(): void {
-    // Log the overall form validity and values for debugging
-    console.log('Form status:', {
-      valid: this.registerForm.valid,
-      rolesSelected: this.rolesFormArray.length > 0,
-      formValue: this.registerForm.value
-    });
-    
+    if (this.registerForm.invalid || this.rolesFormArray.length === 0) {
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
-    
-    const formValue = { ...this.registerForm.value };
-    delete formValue.confirmPassword;
-    
-    // S'assurer que la date de naissance est au format YYYY-MM-DD
-    if (formValue.birthDate) {
-      try {
-        // Si la date est déjà un objet Date ou une chaîne de caractères
-        const birthDate = new Date(formValue.birthDate);
-        
-        // Vérifier que la date est valide
-        if (isNaN(birthDate.getTime())) {
-          throw new Error('Date de naissance invalide');
-        }
-        
-        // Formater en YYYY-MM-DD
-        const year = birthDate.getFullYear();
-        const month = String(birthDate.getMonth() + 1).padStart(2, '0');
-        const day = String(birthDate.getDate()).padStart(2, '0');
-        formValue.birthDate = `${year}-${month}-${day}`;
-      } catch (error) {
-        this.isLoading = false;
-        this.errorMessage = 'Le format de la date de naissance est invalide. Utilisez le format JJ/MM/AAAA.';
-        return;
-      }
+
+    // Récupérer les valeurs du formulaire
+    const formValues = this.registerForm.value;
+
+    // Préparer les données pour l'API
+    const userData: any = {
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email,
+      password: formValues.password,
+      birthDate: new Date(formValues.birthDate),
+      address: formValues.address,
+      phoneNumber: formValues.phoneNumber || undefined,
+      roles: this.rolesFormArray.value,
+    };
+
+    // Ajouter les informations spécifiques au restaurateur si nécessaire
+    if (this.showRestaurantOwnerFields) {
+      userData.siret = formValues.siretNumber;
     }
-    
-    // Remove unused fields based on selected roles
-    if (!this.showRestaurantOwnerFields) {
-      const restaurantFields = [
-        'restaurantName', 'restaurantDescription', 'siretNumber', 'restaurantAddress', 
-        'restaurantCity', 'restaurantZipCode', 'restaurantPhone', 'cuisineType', 'deliveryFee'
-      ];
-      restaurantFields.forEach(field => delete formValue[field]);
+
+    // Ajouter les informations spécifiques au livreur si nécessaire
+    if (this.showDelivererFields) {
+      userData.iban = formValues.iban;
     }
-    
-    if (!this.showDelivererFields) {
-      const delivererFields = [
-        'delivererPhoneNumber', 'delivererSiretNumber', 'accountHolderName', 'iban'
-      ];
-      delivererFields.forEach(field => delete formValue[field]);
-    }
-    
-    // Log the final data being sent to the server
-    console.log('Submitting registration data:', formValue);
-    
-    this.authService.register(formValue)
+
+    // Log des données envoyées à l'API
+    console.log('Données envoyées à l\'API:', userData);
+
+    // Appeler le service d'authentification pour créer l'utilisateur
+    this.authService.register(userData)
       .pipe(
         finalize(() => {
           this.isLoading = false;
-          console.log('Registration request completed');
         })
       )
       .subscribe({
         next: (response) => {
-          console.log('Registration successful:', response);
-          this.router.navigate(['/']);
+          console.log('Inscription réussie:', response);
+          // Rediriger vers la page d'accueil
+          this.router.navigate(['/home']);
         },
         error: (error) => {
-          console.error('Registration error:', error);
-          this.errorMessage = error?.message || 'An error occurred during registration. Please try again.';
+          console.error('Erreur lors de l\'inscription:', error);
+          
+          // Formatter le message d'erreur
+          if (error.error?.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.message) {
+            this.errorMessage = error.message;
+          } else {
+            this.errorMessage = 'Une erreur est survenue lors de l\'inscription. Veuillez réessayer.';
+          }
+          
+          // Si c'est une erreur de validation, afficher les détails
+          if (error.error?.errors) {
+            const errorDetails = error.error.errors.map((err: any) => `${err.field}: ${err.message}`).join('\n');
+            this.errorMessage += '\n' + errorDetails;
+          }
         }
       });
   }

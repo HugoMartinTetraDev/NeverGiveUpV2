@@ -22,7 +22,7 @@ model User {
   birthDate      DateTime
   address        String
   phoneNumber    String?
-  role           Role
+  userRoles      UserRole[]   // Relation many-to-many avec les rôles
   referralCode   String?      @unique
   status         UserStatus   @default(ACTIVE)
   siret          String?
@@ -32,6 +32,17 @@ model User {
   deliveries     Order[]      @relation("DeliveryAssigned")
   notifications  Notification[]
   createdAt      DateTime     @default(now())
+}
+
+// Table intermédiaire pour la relation many-to-many
+model UserRole {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  role       Role
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, role])
 }
 
 enum Role {

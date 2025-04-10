@@ -228,8 +228,15 @@ export class OrdersService {
     const deliveryPerson = await this.prisma.user.findFirst({
       where: {
         id: assignDto.deliveryPersonId,
-        role: Role.LIVREUR,
+        userRoles: {
+          some: {
+            role: Role.LIVREUR
+          }
+        }
       },
+      include: {
+        userRoles: true
+      }
     });
 
     if (!deliveryPerson) {

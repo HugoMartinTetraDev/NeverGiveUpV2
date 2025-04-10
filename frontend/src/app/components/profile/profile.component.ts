@@ -11,17 +11,23 @@ import { ProfileDeleteDialogComponent } from './profile-delete-dialog/profile-de
 import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
+import { User, UserRole } from '../../models/user.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UserRolesManagerComponent } from './user-roles-manager/user-roles-manager.component';
 
+// Interface pour le profil utilisateur avec birthDate en string pour l'affichage
 interface UserProfile {
+  id: number;
   firstName: string;
   lastName: string;
-  birthDate: string;
+  birthDate: string; // Format pour l'affichage
   email: string;
   password: string;
   address: string;
   referralCode: string;
+  status: 'Actif' | 'Suspendu';
+  roles: UserRole[];
+  primaryRole?: UserRole;
 }
 
 @Component({
@@ -37,18 +43,22 @@ interface UserProfile {
     MatDialogModule,
     MatSnackBarModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    UserRolesManagerComponent
   ]
 })
 export class ProfileComponent implements OnInit {
   userProfile: UserProfile = {
+    id: 0,
     firstName: '',
     lastName: '',
     birthDate: '',
     email: '',
     password: '••••••••••',
     address: '',
-    referralCode: ''
+    referralCode: '',
+    status: 'Actif',
+    roles: []
   };
 
   friendReferralCode: string = '';
@@ -78,13 +88,17 @@ export class ProfileComponent implements OnInit {
     if (currentUser) {
       // Utiliser les données du localStorage si disponibles
       this.userProfile = {
+        id: currentUser.id,
         firstName: currentUser.firstName || '',
         lastName: currentUser.lastName || '',
         birthDate: currentUser.birthDate ? this.formatBirthDate(currentUser.birthDate) : '',
         email: currentUser.email || '',
         password: '••••••••••', // On ne montre jamais le vrai mot de passe
         address: currentUser.address || '',
-        referralCode: currentUser.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+        referralCode: currentUser.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+        status: currentUser.status || 'Actif',
+        roles: currentUser.roles || [],
+        primaryRole: currentUser.primaryRole
       };
       this.isLoading = false;
     } else {
@@ -92,13 +106,17 @@ export class ProfileComponent implements OnInit {
       this.userService.getUserProfile().subscribe({
         next: (profile: User) => {
           this.userProfile = {
+            id: profile.id,
             firstName: profile.firstName || '',
             lastName: profile.lastName || '',
             birthDate: profile.birthDate ? this.formatBirthDate(profile.birthDate) : '',
             email: profile.email || '',
             password: '••••••••••',
             address: profile.address || '',
-            referralCode: profile.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+            referralCode: profile.referralCode || 'POPEAT-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+            status: profile.status || 'Actif',
+            roles: profile.roles || [],
+            primaryRole: profile.primaryRole
           };
           this.isLoading = false;
         },

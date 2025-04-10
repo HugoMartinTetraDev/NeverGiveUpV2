@@ -43,6 +43,8 @@
     </div>
   </div>
 
+  <app-user-roles-manager [user]="userProfile" *ngIf="!isLoading"></app-user-roles-manager>
+
   <h2>Parrainage</h2>
   <div class="referral-section">
     <p>Mon code : {{ userProfile.referralCode }}</p>

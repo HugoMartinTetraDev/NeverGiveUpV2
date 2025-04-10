@@ -75,18 +75,18 @@ export class CommercialUsersComponent implements OnInit {
   }
 
   loadUsers(): void {
-    // Mock data matching the mockup
+    // Mock data - would be fetched from an API in a real application
     this.users = [
       {
         id: 1,
-        firstName: 'Jhon',
+        firstName: 'John',
         lastName: 'DOE',
         birthDate: new Date('1990-01-01'),
         email: 'jhon.doe@example.com',
         address: '24 Le Paquebot',
         referralCode: '1234-5678',
         status: 'Actif',
-        roles: [UserRole.CUSTOMER]
+        roles: [UserRole.CLIENT]
       },
       {
         id: 2,
@@ -97,7 +97,7 @@ export class CommercialUsersComponent implements OnInit {
         address: '24 Le Paquebot',
         referralCode: '1234-5679',
         status: 'Suspendu',
-        roles: [UserRole.CUSTOMER]
+        roles: [UserRole.CLIENT]
       }
     ];
   }
@@ -136,7 +136,7 @@ export class CommercialUsersComponent implements OnInit {
         address: formValue.address,
         referralCode: formValue.referralCode,
         status: formValue.status,
-        roles: [UserRole.CUSTOMER]
+        roles: [UserRole.CLIENT]
       };
 
       const index = this.users.findIndex(u => u.id === this.selectedUser?.id);
@@ -194,7 +194,7 @@ export class CommercialUsersComponent implements OnInit {
       address: '',
       referralCode: '',
       status: 'Actif',
-      roles: [UserRole.CUSTOMER]
+      roles: [UserRole.CLIENT]
     };
     
     // Reset form with initial values

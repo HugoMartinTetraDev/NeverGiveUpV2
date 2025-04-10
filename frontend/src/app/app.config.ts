@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { requestFormatInterceptor } from './interceptors/request-format.interceptor';
+import { loggingInterceptor } from './interceptors/logging.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([
         requestFormatInterceptor,
         authInterceptor,
+        loggingInterceptor,
         errorInterceptor
       ])
     )

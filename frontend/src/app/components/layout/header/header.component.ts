@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     // Surveiller les changements d'utilisateur
     this.authSubscription = this.authService.currentUser$.subscribe(user => {
-      if (user && user.roles && user.roles.includes(UserRole.CUSTOMER)) {
+      if (user && user.roles && user.roles.includes(UserRole.CLIENT)) {
         // Émettre l'événement pour ouvrir le menu latéral pour les clients
         // Attendre un peu pour s'assurer que tout est chargé
         setTimeout(() => {

@@ -5,7 +5,7 @@
   </div>
 
   <!-- Section Client -->
-  <ng-container *ngIf="hasCustomerRole">
+  <ng-container *appHasRole="[UserRole.CLIENT, UserRole.ADMIN]">
     <a mat-list-item>Client</a>
     <a mat-list-item routerLink="/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -22,7 +22,7 @@
   </ng-container>
 
   <!-- Section Restaurateur -->
-  <ng-container *ngIf="hasRestaurantOwnerRole">
+  <ng-container *appHasRole="[UserRole.RESTAURATEUR, UserRole.ADMIN]">
     <a mat-list-item>Restaurateur</a>
     <a mat-list-item routerLink="/restaurateur/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -43,7 +43,7 @@
   </ng-container>
 
   <!-- Section Livreur -->
-  <ng-container *ngIf="hasDelivererRole">
+  <ng-container *appHasRole="[UserRole.LIVREUR, UserRole.ADMIN]">
     <a mat-list-item>Livreur</a>
     <a mat-list-item routerLink="/deliverer/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -55,8 +55,8 @@
     </a>
   </ng-container>
 
-  <!-- Section Développeur -->
-  <ng-container *ngIf="hasDeveloperRole">
+  <!-- Section Admin/Développeur -->
+  <ng-container *appHasRole="[UserRole.ADMIN]">
     <a mat-list-item>Développeur</a>
     <a mat-list-item routerLink="/developer/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -66,10 +66,8 @@
       <mat-icon matListItemIcon>developer_mode</mat-icon>
       <span matListItemTitle>Composants</span>
     </a>
-  </ng-container>
 
-  <!-- Section Service Commercial -->
-  <ng-container *ngIf="hasCommercialRole">
+    <!-- Section Service Commercial -->
     <a mat-list-item>Service Commercial</a>
     <a mat-list-item routerLink="/restaurateur/commercial-orders">
       <mat-icon matListItemIcon>point_of_sale</mat-icon>
@@ -79,10 +77,8 @@
       <mat-icon matListItemIcon>people</mat-icon>
       <span matListItemTitle>Gestion Clients</span>
     </a>
-  </ng-container>
   
-  <!-- Section Service Technique -->
-  <ng-container *ngIf="hasTechnicalRole">
+    <!-- Section Service Technique -->
     <a mat-list-item>Service Technique</a>
     <a mat-list-item routerLink="/tech">
       <mat-icon matListItemIcon>code</mat-icon>
@@ -91,6 +87,10 @@
     <a mat-list-item routerLink="/tech/logs">
       <mat-icon matListItemIcon>analytics</mat-icon>
       <span matListItemTitle>Logs</span>
+    </a>
+    <a mat-list-item routerLink="/tech/storage-reset">
+      <mat-icon matListItemIcon>delete_sweep</mat-icon>
+      <span matListItemTitle>Réinitialiser Stockage</span>
     </a>
   </ng-container>
 

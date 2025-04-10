@@ -36,9 +36,33 @@ export class AdminService {
       recentOrders,
     ] = await Promise.all([
       this.prisma.user.count(),
-      this.prisma.user.count({ where: { role: Role.CLIENT } }),
-      this.prisma.user.count({ where: { role: Role.RESTAURATEUR } }),
-      this.prisma.user.count({ where: { role: Role.LIVREUR } }),
+      this.prisma.user.count({ 
+        where: { 
+          userRoles: { 
+            some: { 
+              role: Role.CLIENT 
+            } 
+          } 
+        } 
+      }),
+      this.prisma.user.count({ 
+        where: { 
+          userRoles: { 
+            some: { 
+              role: Role.RESTAURATEUR 
+            } 
+          } 
+        } 
+      }),
+      this.prisma.user.count({ 
+        where: { 
+          userRoles: { 
+            some: { 
+              role: Role.LIVREUR 
+            } 
+          } 
+        } 
+      }),
       this.prisma.restaurant.count(),
       this.prisma.order.count(),
       this.prisma.order.count({ where: { status: OrderStatus.DELIVERED } }),

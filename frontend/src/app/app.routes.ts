@@ -25,39 +25,168 @@ import { TechComponentsComponent } from './components/tech-components/tech-compo
 import { TechLogsComponent } from './components/tech-logs/tech-logs.component';
 import { LandingComponent } from './pages/landing/landing.component';
 import { RestaurateurMenuManagementComponent } from './components/restaurateur-menu-management/restaurateur-menu-management/restaurateur-menu-management.component';
+import { RoleGuard } from './guards/role.guard';
+import { UserRole } from './models/user.model';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'landing', component: LandingComponent },
   { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
   { path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) },
-  // Customer
-  { path: 'customer-purchase', component: CustomerPurchaseComponent },
-  { path: 'compte', component: ProfileComponent },
-  { path: 'compte/modifier', component: ProfileUpdateComponent },
-  { path: 'commandes', component: OrdersComponent },
-  { path: 'commandes/:id', component: OrderViewComponent },
-  { path: 'checkout', component: CheckoutComponent },
-  { path: 'order-confirmation', component: OrderConfirmationComponent },
-  { path: 'restaurant/:id', component: RestaurantDetailComponent },
-  // Restaurateur
-  { path: 'restaurateur/compte', component: RestaurateurProfileComponent },
-  { path: 'restaurateur/compte/modifier', component: RestaurateurProfileUpdateComponent },
-  { path: 'restaurateur/menu-management', component: RestaurateurMenuManagementComponent },
-  { path: 'restaurateur/commandes', component: RestaurateurOrdersComponent },
-  { path: 'restaurateur/commercial-orders', component: CommercialOrdersComponent },
-  { path: 'restaurateur/commercial-users', component: CommercialUsersComponent },
-  { path: 'restaurateur/statistiques', component: StatisticsComponent },
-  // Deliverer
-  { path: 'deliverer/compte', component: DelivererProfileComponent },
-  { path: 'deliverer/compte/modifier', component: DelivererProfileUpdateComponent },
-  { path: 'deliverer/commandes', component: DelivererOrdersComponent },
-  // Developer
-  { path: 'developer/compte', component: DeveloperProfileComponent },
-  { path: 'developer/compte/modifier', component: DeveloperProfileUpdateComponent },
-  { path: 'dev', component: DevComponentsComponent },
-  // Tech
-  { path: 'tech', component: TechComponentsComponent },
-  { path: 'tech/logs', component: TechLogsComponent },
+  
+  // Routes Client
+  { 
+    path: 'customer-purchase', 
+    component: CustomerPurchaseComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'compte', 
+    component: ProfileComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'compte/modifier', 
+    component: ProfileUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'commandes', 
+    component: OrdersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'commandes/:id', 
+    component: OrderViewComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'checkout', 
+    component: CheckoutComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'order-confirmation', 
+    component: OrderConfirmationComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurant/:id', 
+    component: RestaurantDetailComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  
+  // Routes Restaurateur
+  { 
+    path: 'restaurateur/compte', 
+    component: RestaurateurProfileComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/compte/modifier', 
+    component: RestaurateurProfileUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/menu-management', 
+    component: RestaurateurMenuManagementComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/commandes', 
+    component: RestaurateurOrdersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/commercial-orders', 
+    component: CommercialOrdersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/commercial-users', 
+    component: CommercialUsersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'restaurateur/statistiques', 
+    component: StatisticsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.RESTAURATEUR, UserRole.ADMIN] }
+  },
+  
+  // Routes Livreur
+  { 
+    path: 'deliverer/compte', 
+    component: DelivererProfileComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.LIVREUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'deliverer/compte/modifier', 
+    component: DelivererProfileUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.LIVREUR, UserRole.ADMIN] }
+  },
+  { 
+    path: 'deliverer/commandes', 
+    component: DelivererOrdersComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.LIVREUR, UserRole.ADMIN] }
+  },
+  
+  // Routes Développeur (Admin)
+  { 
+    path: 'developer/compte', 
+    component: DeveloperProfileComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  { 
+    path: 'developer/compte/modifier', 
+    component: DeveloperProfileUpdateComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  { 
+    path: 'dev', 
+    component: DevComponentsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  
+  // Routes techniques (Admin)
+  { 
+    path: 'tech', 
+    component: TechComponentsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  { 
+    path: 'tech/logs', 
+    component: TechLogsComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  { 
+    path: 'tech/storage-reset', 
+    loadComponent: () => import('./components/tech-tools/storage-reset/storage-reset.component').then(m => m.StorageResetComponent),
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.ADMIN] }
+  },
+  
   { path: '**', redirectTo: '' }
 ];
