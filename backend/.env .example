@@ -1,4 +1,0 @@
-DATABASE_URL=postgresql://postgres:password@localhost:5432/PopEat
-JWT_SECRET=supersecretkey
-JWT_EXPIRES_IN=3600s
-FRONTEND_URL=http://localhost:4200 
