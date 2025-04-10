@@ -1,0 +1,14 @@
+{
+  "name": "pop-eat-fullstack",
+  "version": "1.0.0",
+  "description": "Application fullstack avec backend NestJS et frontend Angular",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install --legacy-peer-deps && cd ../frontend && npm install --legacy-peer-deps",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:frontend": "cd frontend && npm run start",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 
