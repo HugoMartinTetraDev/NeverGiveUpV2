@@ -61,6 +61,9 @@ async function bootstrap() {
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
       exposedHeaders: ['X-Total-Count']
     });
+    
+    // Définir un préfixe global pour toutes les routes
+    app.setGlobalPrefix('api');
 
     // Swagger configuration
     const config = new DocumentBuilder()

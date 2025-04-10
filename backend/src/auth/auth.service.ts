@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException, ConflictException, Logger, BadReques
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 
 interface TokenPayload {
   sub: string;
@@ -319,11 +319,13 @@ export class AuthService {
     }
   }
 
-  private generateTokens(userId: string, email: string, roles: Role[]) {
+  private generateTokens(userId: string, email: string, roles: string[] | Role[]) {
+    const typedRoles: Role[] = roles.map(role => role as Role);
+    
     const payload: TokenPayload = { 
       sub: userId, 
       email: email, 
-      roles: roles 
+      roles: typedRoles 
     };
 
     return {

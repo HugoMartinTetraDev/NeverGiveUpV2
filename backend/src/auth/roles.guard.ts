@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -38,7 +38,12 @@ export class RolesGuard implements CanActivate {
     // Assurer que user.roles est toujours un tableau
     const userRoles = Array.isArray(user.roles) ? user.roles : [];
     
-    const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));
+    // Convertir les chaînes en énumérations Role pour la comparaison
+    const typedUserRoles = userRoles.map(role => role as Role);
+    
+    const hasRequiredRole = requiredRoles.some(role => 
+      typedUserRoles.includes(role) || userRoles.includes(role.toString())
+    );
     
     // Enregistrement dans les logs des tentatives d'accès non autorisées
     if (!hasRequiredRole) {

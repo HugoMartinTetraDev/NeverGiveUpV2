@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
-import { RestaurantStatus } from '@prisma/client';
+import { RestaurantStatus } from '../../common/enums';
 
 export class CreateRestaurantDto {
   @ApiProperty({ example: 'Pizza Palace' })

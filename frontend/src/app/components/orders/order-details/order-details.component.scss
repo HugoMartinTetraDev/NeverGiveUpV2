@@ -1,37 +1,102 @@
-.order-card, .no-order-card {
-    max-width: 800px;
-    margin: 20px auto;
-}
-.no-order-card {
-    text-align: center;
+.order-details-container {
     padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
 }
-.no-order-card p {
-    font-size: 1.2em;
-    color: #666;
+
+.order-details-card {
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-.price {
-    float: right;
-    font-weight: bold;
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 30px 0;
 }
-.total-section {
-    margin: 20px 0;
+
+.no-order {
+    text-align: center;
+    padding: 30px 0;
+    color: #888;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .date {
+        color: #666;
+    }
+}
+
+.order-status {
+    margin: 15px 0;
+    
+    h4 {
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+    
     p {
+        color: #2196F3;
+        font-weight: 500;
+    }
+}
+
+.order-items {
+    margin: 15px 0;
+    
+    h4 {
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    
+    .item-quantity {
+        font-weight: 500;
+        margin-right: 10px;
+    }
+    
+    .item-name {
+        flex: 1;
+    }
+    
+    .item-price {
+        color: #333;
+        font-weight: 500;
+    }
+}
+
+.order-total {
+    margin: 15px 0;
+    
+    .subtotal, .fees, .total {
         display: flex;
         justify-content: space-between;
-        margin: 8px 0;
+        margin-bottom: 5px;
     }
+    
     .total {
-        font-weight: bold;
-        font-size: 1.1em;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-top: 10px;
     }
 }
-.status-section {
-    margin: 20px 0;
-}
+
 mat-card-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    padding: 16px;
+    padding: 8px 16px 16px;
+    
+    button {
+        margin-left: 8px;
+    }
 }

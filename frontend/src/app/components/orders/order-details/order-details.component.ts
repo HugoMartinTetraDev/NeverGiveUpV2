@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Order } from '../../../models/order.model';
 import { OrderService } from '../../../services/order.service';
 import { DeleteOrderDialogComponent } from './delete-order-dialog/delete-order-dialog.component';
 import { ModifyOrderDialogComponent } from './modify-order-dialog/modify-order-dialog.component';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-order-details',
@@ -19,27 +22,49 @@ import { ModifyOrderDialogComponent } from './modify-order-dialog/modify-order-d
         MatButtonModule,
         MatDividerModule,
         MatListModule,
-        MatDialogModule
+        MatDialogModule,
+        MatProgressSpinnerModule
     ],
     templateUrl: './order-details.component.html',
     styleUrls: ['./order-details.component.scss']
 })
-export class OrderDetailsComponent implements OnInit {
+export class OrderDetailsComponent implements OnInit, OnDestroy {
     currentOrder: Order | null = null;
+    isLoading = false;
+    private subscriptions: Subscription[] = [];
 
     constructor(
         private orderService: OrderService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private route: ActivatedRoute
     ) {}
 
     ngOnInit() {
-        this.loadOrder();
+        // Souscrire à l'état de chargement
+        this.subscriptions.push(
+            this.orderService.isLoading$.subscribe(loading => {
+                this.isLoading = loading;
+            })
+        );
+
+        // Souscrire aux changements de commande
+        this.subscriptions.push(
+            this.orderService.currentOrder$.subscribe((order: Order | null) => {
+                this.currentOrder = order;
+            })
+        );
+
+        // Récupérer l'ID de la commande depuis l'URL si présent
+        this.route.params.subscribe(params => {
+            if (params['id']) {
+                this.orderService.getOrderById(params['id']).subscribe();
+            }
+        });
     }
 
-    loadOrder() {
-        this.orderService.currentOrder$.subscribe((order: Order | null) => {
-            this.currentOrder = order;
-        });
+    ngOnDestroy() {
+        // Nettoyer les souscriptions pour éviter les fuites de mémoire
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     onModify() {
@@ -68,9 +93,7 @@ export class OrderDetailsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result && this.currentOrder) {
-                this.orderService.deleteOrder(this.currentOrder.id).subscribe((success: void) => {
-                    this.currentOrder = null;
-                });
+                this.orderService.deleteOrder(this.currentOrder.id).subscribe();
             }
         });
     }

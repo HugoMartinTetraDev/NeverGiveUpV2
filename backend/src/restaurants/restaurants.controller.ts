@@ -14,7 +14,7 @@ import { CreateRestaurantDto, UpdateRestaurantDto } from './dto/restaurant.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 import {
   ApiTags,
   ApiOperation,
@@ -22,11 +22,15 @@ import {
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { OrdersService } from '../orders/orders.service';
 
 @ApiTags('restaurants')
-@Controller('api/restaurants')
+@Controller('restaurants')
 export class RestaurantsController {
-  constructor(private readonly restaurantsService: RestaurantsService) {}
+  constructor(
+    private readonly restaurantsService: RestaurantsService,
+    private readonly ordersService: OrdersService
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -46,6 +50,48 @@ export class RestaurantsController {
   @ApiResponse({ status: 200, description: 'List of all restaurants' })
   findAll() {
     return this.restaurantsService.findAll();
+  }
+
+  /**
+   * ATTENTION: Les routes spécifiques doivent être AVANT les routes paramétrées (:id)
+   * pour éviter les conflits dans la résolution des routes.
+   */
+  
+  @Get('my-restaurant')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.RESTAURATEUR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the restaurant owned by the authenticated restaurateur' })
+  @ApiResponse({ status: 200, description: 'Restaurant retrieved successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Restaurant not found' })
+  async getMyRestaurant(@Request() req) {
+    // Récupérer le restaurant dont le ownerId correspond à l'ID de l'utilisateur connecté
+    return this.restaurantsService.findByOwnerId(req.user.id);
+  }
+
+  @Get('my-restaurant/orders')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.RESTAURATEUR)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get orders for the restaurant owned by the authenticated user' })
+  @ApiResponse({ status: 200, description: 'Orders retrieved successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiResponse({ status: 404, description: 'Restaurant not found' })
+  async getMyRestaurantOrders(@Request() req) {
+    try {
+      // Récupérer d'abord le restaurant de l'utilisateur
+      const restaurant = await this.restaurantsService.findByOwnerId(req.user.id);
+      if (!restaurant) {
+        return [];
+      }
+      
+      // Utiliser le service des commandes pour récupérer les commandes du restaurant
+      return this.ordersService.findAllByRestaurantId(restaurant.id);
+    } catch (error) {
+      console.error('Error fetching restaurant orders:', error);
+      return [];
+    }
   }
 
   @Get(':id')

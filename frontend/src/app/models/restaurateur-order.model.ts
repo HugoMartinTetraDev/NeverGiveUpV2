@@ -3,5 +3,5 @@ export interface RestaurateurOrder {
   date: Date;
   articles: string;
   status: string;
-  amount?: number;
+  amount?: number | null;
 } 

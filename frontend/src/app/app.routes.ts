@@ -33,6 +33,10 @@ export const routes: Routes = [
   { path: 'landing', component: LandingComponent },
   { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
   { path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) },
+  {
+    path: 'test-api',
+    loadComponent: () => import('./components/test/api-test.component').then(c => c.ApiTestComponent)
+  },
   
   // Routes Client
   { 

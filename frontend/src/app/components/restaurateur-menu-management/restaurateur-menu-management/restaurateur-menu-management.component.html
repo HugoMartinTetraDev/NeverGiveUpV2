@@ -5,43 +5,111 @@
       <button mat-raised-button color="primary" (click)="openItemDialog()">+ ARTICLE</button>
     </div>
 
-    <mat-tab-group>
-      <mat-tab label="Menus">
-        <div class="menu-grid">
-          @for (menu of restaurant.menus; track menu.id) {
-            <mat-card class="menu-card">
-              <img mat-card-image [src]="menu.image" [alt]="menu.name">
-              <mat-card-content>
-                <h2>{{menu.name}}</h2>
-                <p class="price">{{menu.price | currency:'EUR':'symbol':'1.2-2'}}</p>
-                <p class="description">{{menu.description}}</p>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-button color="primary" (click)="openMenuDialog(menu)">MODIFIER</button>
-                <button mat-button color="warn" (click)="deleteMenu(menu)">SUPPRIMER</button>
-              </mat-card-actions>
-            </mat-card>
-          }
+    @if (isLoading) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Chargement des informations du restaurant...</p>
+      </div>
+    } @else if (error) {
+      <div class="error-container">
+        <mat-icon color="warn">error_outline</mat-icon>
+        <p>{{error}}</p>
+        <button mat-raised-button color="primary" (click)="loadRestaurantDetails()">
+          RÉESSAYER
+        </button>
+      </div>
+    } @else {
+      <div class="restaurant-header">
+        <h1>{{restaurant.name}}</h1>
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="openMenuDialog()">AJOUTER UN MENU</button>
+          <button mat-raised-button color="accent" (click)="openItemDialog()">AJOUTER UN ARTICLE</button>
         </div>
-      </mat-tab>
+      </div>
+      <mat-tab-group>
+        <mat-tab label="Menus">
+          <div class="menu-grid">
+            @if (restaurant.menus.length === 0) {
+              <div class="no-data">
+                <mat-icon>restaurant_menu</mat-icon>
+                <p>Aucun menu n'a été créé</p>
+                <button mat-raised-button color="primary" (click)="openMenuDialog()">
+                  CRÉER UN MENU
+                </button>
+              </div>
+            } @else if (paginatedMenus.length > 0) {
+              <div class="menu-header">
+                <div class="page-info">
+                  <span>{{ paginatedMenus.length > 0 ? ((currentMenuPage - 1) * pageSize) + 1 : 0 }} - {{ Math.min(currentMenuPage * pageSize, restaurant.menus.length || 0) }} sur {{ restaurant.menus.length || 0 }}</span>
+                </div>
+                <div class="pagination-controls">
+                  <button mat-icon-button [disabled]="currentMenuPage === 1" (click)="prevMenuPage()">
+                    <mat-icon>chevron_left</mat-icon>
+                  </button>
+                  <button mat-icon-button [disabled]="currentMenuPage * pageSize >= (restaurant.menus.length || 0)" (click)="nextMenuPage()">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                </div>
+              </div>
+              @for (menu of paginatedMenus; track menu.id) {
+                <mat-card class="menu-card">
+                  <img mat-card-image [src]="menu.image" [alt]="menu.name">
+                  <mat-card-content>
+                    <h2>{{menu.name}}</h2>
+                    <p class="price">{{menu.price | currency:'EUR':'symbol':'1.2-2'}}</p>
+                    <p class="description">{{menu.description}}</p>
+                  </mat-card-content>
+                  <mat-card-actions>
+                    <button mat-button color="primary" (click)="openMenuDialog(menu)">MODIFIER</button>
+                    <button mat-button color="warn" (click)="deleteMenu(menu)">SUPPRIMER</button>
+                  </mat-card-actions>
+                </mat-card>
+              }
+            }
+          </div>
+        </mat-tab>
 
-      <mat-tab label="Articles">
-        <div class="menu-grid">
-          @for (item of restaurant.articles; track item.id) {
-            <mat-card class="menu-card">
-              <img mat-card-image [src]="item.image" [alt]="item.name">
-              <mat-card-content>
-                <h2>{{item.name}}</h2>
-                <p class="price">{{item.price | currency:'EUR':'symbol':'1.2-2'}}</p>
-                <p class="description">{{item.description}}</p>
-              </mat-card-content>
-              <mat-card-actions>
-                <button mat-button color="primary" (click)="openItemDialog(item)">MODIFIER</button>
-                <button mat-button color="warn" (click)="deleteArticle(item)">SUPPRIMER</button>
-              </mat-card-actions>
-            </mat-card>
-          }
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+        <mat-tab label="Articles">
+          <div class="menu-grid">
+            @if (restaurant.articles.length === 0) {
+              <div class="no-data">
+                <mat-icon>dinner_dining</mat-icon>
+                <p>Aucun article n'a été créé</p>
+                <button mat-raised-button color="primary" (click)="openItemDialog()">
+                  CRÉER UN ARTICLE
+                </button>
+              </div>
+            } @else if (paginatedArticles.length > 0) {
+              <div class="menu-header">
+                <div class="page-info">
+                  <span>{{ paginatedArticles.length > 0 ? ((currentArticlePage - 1) * pageSize) + 1 : 0 }} - {{ Math.min(currentArticlePage * pageSize, restaurant.articles.length || 0) }} sur {{ restaurant.articles.length || 0 }}</span>
+                </div>
+                <div class="pagination-controls">
+                  <button mat-icon-button [disabled]="currentArticlePage === 1" (click)="prevArticlePage()">
+                    <mat-icon>chevron_left</mat-icon>
+                  </button>
+                  <button mat-icon-button [disabled]="currentArticlePage * pageSize >= (restaurant.articles.length || 0)" (click)="nextArticlePage()">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                </div>
+              </div>
+              @for (item of paginatedArticles; track item.id) {
+                <mat-card class="menu-card">
+                  <img mat-card-image [src]="item.image" [alt]="item.name">
+                  <mat-card-content>
+                    <h2>{{item.name}}</h2>
+                    <p class="price">{{item.price | currency:'EUR':'symbol':'1.2-2'}}</p>
+                    <p class="description">{{item.description}}</p>
+                  </mat-card-content>
+                  <mat-card-actions>
+                    <button mat-button color="primary" (click)="openItemDialog(item)">MODIFIER</button>
+                    <button mat-button color="warn" (click)="deleteArticle(item)">SUPPRIMER</button>
+                  </mat-card-actions>
+                </mat-card>
+              }
+            }
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    }
   </div>

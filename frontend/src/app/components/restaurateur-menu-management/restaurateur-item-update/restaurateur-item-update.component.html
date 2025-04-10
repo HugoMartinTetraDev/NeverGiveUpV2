@@ -12,8 +12,15 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nom</mat-label>
         <input matInput placeholder="ex : Classic Burger" 
-               [(ngModel)]="item.name" name="name" required>
+               [(ngModel)]="item.name" name="name" required
+               minlength="3" maxlength="50">
         <mat-icon matSuffix>restaurant_menu</mat-icon>
+        <mat-error *ngIf="itemForm.controls['name'] && itemForm.controls['name'].errors && itemForm.controls['name'].errors['required']">
+          Le nom est obligatoire
+        </mat-error>
+        <mat-error *ngIf="itemForm.controls['name'] && itemForm.controls['name'].errors && itemForm.controls['name'].errors['minlength']">
+          Le nom doit contenir au moins 3 caractères
+        </mat-error>
       </mat-form-field>
 
       <div class="photo-upload">
@@ -21,10 +28,26 @@
         <div class="upload-container">
           <input type="file" #fileInput style="display: none" 
                  accept="image/*" (change)="onFileSelected($event)">
-          <button mat-raised-button color="primary" (click)="fileInput.click()">
+          <button mat-raised-button color="primary" (click)="fileInput.click()"
+                  [disabled]="isImageLoading">
             <mat-icon>upload</mat-icon>
             PARCOURIR LES FICHIERS
           </button>
+          
+          <div *ngIf="isImageLoading" class="loading-progress">
+            <mat-progress-bar mode="indeterminate" *ngIf="!uploadProgress"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress && uploadProgress.progress || 0" *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'"></mat-progress-bar>
+            <span *ngIf="!uploadProgress">Traitement de l'image en cours...</span>
+            <span *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'">
+              Upload en cours: {{ uploadProgress.progress }}%
+            </span>
+          </div>
+          
+          <div *ngIf="imageError" class="image-error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ imageError }}</span>
+          </div>
+          
           @if (item.image) {
             <div class="image-preview">
               <img [src]="item.image" [alt]="item.name">
@@ -41,16 +64,23 @@
         <mat-label>Description (optionnelle)</mat-label>
         <textarea matInput placeholder="ex : Pain, salade, tomate, oignon..."
                   [(ngModel)]="item.description" name="description"
-                  rows="3"></textarea>
+                  rows="3" maxlength="200"></textarea>
         <mat-icon matSuffix>description</mat-icon>
+        <mat-hint align="end">{{ item.description ? item.description.length : 0 }}/200</mat-hint>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Prix</mat-label>
         <input matInput type="number" placeholder="ex : 8.00 €"
                [(ngModel)]="item.price" name="price" required
-               min="0" step="0.50">
+               min="0.1" step="0.10">
         <mat-icon matSuffix>euro</mat-icon>
+        <mat-error *ngIf="itemForm.controls['price'] && itemForm.controls['price'].errors && itemForm.controls['price'].errors['required']">
+          Le prix est obligatoire
+        </mat-error>
+        <mat-error *ngIf="itemForm.controls['price'] && itemForm.controls['price'].errors && itemForm.controls['price'].errors['min']">
+          Le prix doit être supérieur à 0
+        </mat-error>
       </mat-form-field>
     </form>
     
@@ -59,7 +89,7 @@
     <div class="dialog-actions">
       <button mat-button (click)="onCancel()">ANNULER</button>
       <button mat-raised-button color="primary" 
-              (click)="onSave()" [disabled]="!itemForm.valid">
+              (click)="onSave()" [disabled]="!itemForm.valid || isImageLoading">
         SAUVEGARDER
       </button>
     </div>

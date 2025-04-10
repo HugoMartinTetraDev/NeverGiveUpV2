@@ -4,13 +4,16 @@ import { Order, OrderHistory } from '../models/order.model';
 import { CartService } from './cart.service';
 import { ApiService } from './api.service';
 import { NotificationService } from './notification.service';
+import { finalize } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class OrderService {
     private currentOrderSubject = new BehaviorSubject<Order | null>(null);
+    private isLoadingSubject = new BehaviorSubject<boolean>(false);
     public currentOrder$ = this.currentOrderSubject.asObservable();
+    public isLoading$ = this.isLoadingSubject.asObservable();
 
     constructor(
         private cartService: CartService,
@@ -29,7 +32,9 @@ export class OrderService {
      * Récupère toutes les commandes de l'utilisateur connecté
      */
     getOrders(): Observable<Order[]> {
+        this.isLoadingSubject.next(true);
         return this.apiService.get<Order[]>('orders').pipe(
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la récupération des commandes');
                 return throwError(() => error);
@@ -41,8 +46,10 @@ export class OrderService {
      * Récupère les détails d'une commande par son ID
      */
     getOrderById(orderId: string): Observable<Order> {
+        this.isLoadingSubject.next(true);
         return this.apiService.get<Order>(`orders/${orderId}`).pipe(
             tap(order => this.currentOrderSubject.next(order)),
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la récupération de la commande');
                 return throwError(() => error);
@@ -54,6 +61,7 @@ export class OrderService {
      * Crée une nouvelle commande
      */
     createOrder(order: Partial<Order>): Observable<Order> {
+        this.isLoadingSubject.next(true);
         return this.apiService.post<Order>('orders', order).pipe(
             tap(newOrder => {
                 this.currentOrderSubject.next(newOrder);
@@ -61,6 +69,7 @@ export class OrderService {
                 // Vider le panier après création de la commande
                 this.cartService.clearCart();
             }),
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la création de la commande');
                 return throwError(() => error);
@@ -72,11 +81,13 @@ export class OrderService {
      * Met à jour le statut d'une commande
      */
     updateOrderStatus(orderId: string, status: string): Observable<Order> {
+        this.isLoadingSubject.next(true);
         return this.apiService.put<Order>(`orders/${orderId}/status`, { status }).pipe(
             tap(updatedOrder => {
                 this.currentOrderSubject.next(updatedOrder);
                 this.notificationService.success('Statut de la commande mis à jour');
             }),
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la mise à jour du statut');
                 return throwError(() => error);
@@ -88,6 +99,7 @@ export class OrderService {
      * Récupère l'historique des commandes de l'utilisateur
      */
     getOrderHistory(): Observable<OrderHistory[]> {
+        this.isLoadingSubject.next(true);
         return this.apiService.get<Order[]>('orders').pipe(
             map(orders => orders.map(order => {
                 // Extraction du type de paiement depuis les détails de statut si disponible
@@ -103,6 +115,7 @@ export class OrderService {
                     paymentType
                 } as OrderHistory;
             })),
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la récupération de l\'historique');
                 return throwError(() => error);
@@ -138,11 +151,13 @@ export class OrderService {
      * Supprime une commande par son ID
      */
     deleteOrder(orderId: string): Observable<void> {
+        this.isLoadingSubject.next(true);
         return this.apiService.delete<void>(`orders/${orderId}`).pipe(
             tap(() => {
                 this.currentOrderSubject.next(null);
                 this.notificationService.success('Commande supprimée avec succès');
             }),
+            finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la suppression de la commande');
                 return throwError(() => error);

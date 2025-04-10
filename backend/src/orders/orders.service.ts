@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto, UpdateOrderStatusDto, AssignDeliveryPersonDto } from './dto/order.dto';
-import { OrderStatus, Role } from '@prisma/client';
+import { OrderStatus, Role } from '../common/enums';
 
 @Injectable()
 export class OrdersService {
@@ -268,7 +268,10 @@ export class OrdersService {
   }
 
   // Helper method to validate order status transitions
-  private validateStatusTransition(currentStatus: OrderStatus, newStatus: OrderStatus, role: Role) {
+  private validateStatusTransition(currentStatus: string | OrderStatus, newStatus: OrderStatus, role: Role) {
+    // Convertir les chaînes en énumérations
+    const typedCurrentStatus = currentStatus as OrderStatus;
+    
     const validTransitions = {
       [OrderStatus.PENDING]: {
         [Role.RESTAURATEUR]: [OrderStatus.ACCEPTED, OrderStatus.CANCELED],
@@ -295,12 +298,49 @@ export class OrdersService {
       },
     };
 
-    const allowedTransitions = validTransitions[currentStatus]?.[role] || [];
+    const allowedTransitions = validTransitions[typedCurrentStatus]?.[role] || [];
 
     if (!allowedTransitions.includes(newStatus)) {
       throw new BadRequestException(
-        `Invalid status transition from ${currentStatus} to ${newStatus} for role ${role}`
+        `Invalid status transition from ${typedCurrentStatus} to ${newStatus} for role ${role}`
       );
     }
+  }
+
+  /**
+   * Récupérer toutes les commandes pour un restaurant spécifique
+   */
+  async findAllByRestaurantId(restaurantId: string) {
+    return this.prisma.order.findMany({
+      where: { restaurantId },
+      include: {
+        restaurant: true,
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+        orderItems: {
+          include: {
+            article: true,
+          },
+        },
+        deliveryPerson: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            phoneNumber: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 } 

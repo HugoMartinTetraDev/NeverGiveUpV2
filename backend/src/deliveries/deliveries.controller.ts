@@ -13,7 +13,7 @@ import { AssignDeliveryPersonDto, UpdateOrderStatusDto } from '../orders/dto/ord
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 import {
   ApiTags,
   ApiOperation,
@@ -23,7 +23,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('deliveries')
-@Controller('api/deliveries')
+@Controller('deliveries')
 export class DeliveriesController {
   constructor(private readonly ordersService: OrdersService) {}
 

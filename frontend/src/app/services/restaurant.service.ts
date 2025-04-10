@@ -37,6 +37,22 @@ export class RestaurantService {
   }
 
   /**
+   * Récupère le restaurant du restaurateur connecté
+   */
+  getMyRestaurant(): Observable<Restaurant> {
+    return this.apiService.get<Restaurant>('restaurants/my-restaurant').pipe(
+      tap(restaurant => {
+        this.restaurantSubject.next(restaurant);
+        return restaurant;
+      }),
+      catchError(error => {
+        this.notificationService.error(`Erreur lors de la récupération de votre restaurant: ${error.message}`);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
    * Crée un nouveau restaurant
    */
   createRestaurant(restaurant: Restaurant): Observable<Restaurant> {

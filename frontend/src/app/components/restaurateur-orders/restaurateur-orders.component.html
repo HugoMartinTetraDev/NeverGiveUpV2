@@ -1,114 +1,127 @@
 <div class="orders-container">
+    <!-- Loading Spinner -->
+    <div class="loading-container" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Chargement des commandes...</p>
+    </div>
 
     <!-- Order Details Section -->
     <div class="order-details-container" *ngIf="selectedOrder">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Détails de la commande #{{ selectedOrder.id }}</mat-card-title>
-      <mat-card-subtitle>{{ selectedOrder.date | date:'dd/MM/yyyy HH:mm:ss' }}</mat-card-subtitle>
-    </mat-card-header>
-    
-    <mat-card-content>
-      <div class="order-info">
-        <p><strong>Articles:</strong> {{ selectedOrder.articles }}</p>
-        <p><strong>Statut:</strong> {{ selectedOrder.status }}</p>
-        <p *ngIf="selectedOrder.amount"><strong>Montant:</strong> {{ selectedOrder.amount | currency:'EUR' }}</p>
-      </div>
-      
-      <mat-divider></mat-divider>
-      
-      <div class="order-actions">
-        <h3>Actions disponibles</h3>
-      </div>
-    </mat-card-content>
-    
-    <mat-card-actions>
-      <button mat-raised-button color="primary" *ngIf="selectedOrder.status === 'En attente'" (click)="validateOrder(selectedOrder)">VALIDER</button>
-      <button mat-raised-button color="warn" *ngIf="['En attente', 'Préparation en cours'].includes(selectedOrder.status)" (click)="cancelOrder()">ANNULER</button>
-      <button mat-raised-button color="accent" *ngIf="selectedOrder.status === 'Préparation en cours'" (click)="markAsReady()">MARQUER COMME PRÊT</button>
-      <button mat-raised-button (click)="hideOrderDetails()">FERMER</button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Détails de la commande #{{ selectedOrder.id }}</mat-card-title>
+                <mat-card-subtitle>{{ selectedOrder.date | date:'dd/MM/yyyy HH:mm:ss' }}</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+                <div class="order-info">
+                    <p><strong>Articles:</strong> {{ selectedOrder.articles }}</p>
+                    <p><strong>Statut:</strong> {{ selectedOrder.status }}</p>
+                    <p *ngIf="selectedOrder.amount"><strong>Montant:</strong> {{ selectedOrder.amount | currency:'EUR' }}</p>
+                </div>
+                
+                <mat-divider></mat-divider>
+                
+                <div class="order-actions">
+                    <h3>Actions disponibles</h3>
+                </div>
+            </mat-card-content>
+            
+            <mat-card-actions>
+                <button mat-raised-button color="primary" *ngIf="selectedOrder.status === 'En attente'" (click)="validateOrder(selectedOrder)">VALIDER</button>
+                <button mat-raised-button color="warn" *ngIf="['En attente', 'Préparation en cours'].includes(selectedOrder.status)" (click)="cancelOrder()">ANNULER</button>
+                <button mat-raised-button color="accent" *ngIf="selectedOrder.status === 'Préparation en cours'" (click)="markAsReady()">MARQUER COMME PRÊT</button>
+                <button mat-raised-button (click)="hideOrderDetails()">FERMER</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 
-<h1>Commandes en cours</h1>
+    <div *ngIf="!isLoading">
+        <h1>Commandes en cours</h1>
 
-<table mat-table [dataSource]="currentOrders" class="mat-elevation-z2 orders-table">
-  <!-- ID Column -->
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef>ID</th>
-    <td mat-cell *matCellDef="let order">{{ order.id }}</td>
-  </ng-container>
+        <div *ngIf="currentOrders.length === 0" class="no-data-message">
+            <p>Aucune commande en cours pour le moment.</p>
+        </div>
 
-  <!-- Date Column -->
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
-    <td mat-cell *matCellDef="let order">{{ order.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-  </ng-container>
+        <table mat-table [dataSource]="currentOrders" class="mat-elevation-z2 orders-table" *ngIf="currentOrders.length > 0">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+            </ng-container>
 
-  <!-- Articles Column -->
-  <ng-container matColumnDef="articles">
-    <th mat-header-cell *matHeaderCellDef>Articles</th>
-    <td mat-cell *matCellDef="let order">{{ order.articles }}</td>
-  </ng-container>
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
+                <td mat-cell *matCellDef="let order">{{ order.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            </ng-container>
 
-  <!-- Status Column -->
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef>Statut</th>
-    <td mat-cell *matCellDef="let order">{{ order.status }}</td>
-  </ng-container>
+            <!-- Articles Column -->
+            <ng-container matColumnDef="articles">
+                <th mat-header-cell *matHeaderCellDef>Articles</th>
+                <td mat-cell *matCellDef="let order">{{ order.articles }}</td>
+            </ng-container>
 
-  <!-- Actions Column -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let order">
-      <button mat-raised-button color="primary" class="validate-btn" (click)="validateOrder(order)" *ngIf="order.status === 'En attente'">VALIDER</button>
-      <button mat-raised-button color="primary" class="details-btn" (click)="showOrderDetails(order)">DÉTAILS</button>
-    </td>
-  </ng-container>
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Statut</th>
+                <td mat-cell *matCellDef="let order">{{ order.status }}</td>
+            </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let order">
+                    <button mat-raised-button color="primary" class="validate-btn" (click)="validateOrder(order)" *ngIf="order.status === 'En attente'">VALIDER</button>
+                    <button mat-raised-button color="primary" class="details-btn" (click)="showOrderDetails(order)">DÉTAILS</button>
+                </td>
+            </ng-container>
 
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
 
+        <h2>Historique</h2>
 
-<h2>Historique</h2>
+        <div *ngIf="orderHistory.length === 0" class="no-data-message">
+            <p>Aucun historique de commandes disponible.</p>
+        </div>
 
-<table mat-table [dataSource]="orderHistory" class="mat-elevation-z2 history-table">
-  <!-- ID Column -->
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef>ID</th>
-    <td mat-cell *matCellDef="let order">{{ order.id }}</td>
-  </ng-container>
+        <table mat-table [dataSource]="orderHistory" class="mat-elevation-z2 history-table" *ngIf="orderHistory.length > 0">
+            <!-- ID Column -->
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+            </ng-container>
 
-  <!-- Date Column -->
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
-    <td mat-cell *matCellDef="let order">{{ order.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-  </ng-container>
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
+                <td mat-cell *matCellDef="let order">{{ order.date | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            </ng-container>
 
-  <!-- Articles Column -->
-  <ng-container matColumnDef="articles">
-    <th mat-header-cell *matHeaderCellDef>Articles</th>
-    <td mat-cell *matCellDef="let order">{{ order.articles }}</td>
-  </ng-container>
+            <!-- Articles Column -->
+            <ng-container matColumnDef="articles">
+                <th mat-header-cell *matHeaderCellDef>Articles</th>
+                <td mat-cell *matCellDef="let order">{{ order.articles }}</td>
+            </ng-container>
 
-  <!-- Amount Column -->
-  <ng-container matColumnDef="amount">
-    <th mat-header-cell *matHeaderCellDef>Montant</th>
-    <td mat-cell *matCellDef="let order">{{ order.amount | currency:'EUR' }}</td>
-  </ng-container>
+            <!-- Amount Column -->
+            <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef>Montant</th>
+                <td mat-cell *matCellDef="let order">{{ order.amount | currency:'EUR' }}</td>
+            </ng-container>
 
-  <!-- Action Column -->
-  <ng-container matColumnDef="action">
-    <th mat-header-cell *matHeaderCellDef>Action</th>
-    <td mat-cell *matCellDef="let order">
-      <button mat-raised-button color="primary" class="details-btn" (click)="showOrderDetails(order)">DÉTAILS</button>
-    </td>
-  </ng-container>
+            <!-- Action Column -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let order">
+                    <button mat-raised-button color="primary" class="details-btn" (click)="showOrderDetails(order)">DÉTAILS</button>
+                </td>
+            </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="historyDisplayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: historyDisplayedColumns;"></tr>
-</table>
+            <tr mat-header-row *matHeaderRowDef="historyDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: historyDisplayedColumns;"></tr>
+        </table>
+    </div>
 </div>

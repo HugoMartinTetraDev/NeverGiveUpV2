@@ -13,7 +13,7 @@ import { CreateMenuDto, UpdateMenuDto } from './dto/menu.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 import {
   ApiTags,
   ApiOperation,
@@ -23,7 +23,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('menus')
-@Controller('api/restaurants/:restaurantId/menu')
+@Controller('restaurants/:restaurantId/menu')
 export class MenusController {
   constructor(private readonly menusService: MenusService) {}
 

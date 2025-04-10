@@ -8,10 +8,18 @@ export class RestaurantsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createRestaurantDto: CreateRestaurantDto, ownerId?: string): Promise<Restaurant> {
-    const data = {
-      ...createRestaurantDto,
-      ...(ownerId && { ownerId }),
-    };
+    // Créer un objet data valide pour Prisma
+    let data: any = { ...createRestaurantDto };
+    
+    // Ajouter ownerId uniquement s'il est défini
+    if (ownerId) {
+      data = {
+        ...data,
+        owner: {
+          connect: { id: ownerId }
+        }
+      };
+    }
 
     return this.prisma.restaurant.create({
       data,
@@ -98,5 +106,28 @@ export class RestaurantsService {
       averageOrderValue,
       popularItems,
     };
+  }
+
+  /**
+   * Trouve un restaurant par l'ID de son propriétaire
+   */
+  async findByOwnerId(ownerId: string): Promise<Restaurant> {
+    const restaurant = await this.prisma.restaurant.findUnique({
+      where: { ownerId },
+      include: {
+        menus: {
+          include: {
+            items: true
+          }
+        },
+        articles: true
+      }
+    });
+
+    if (!restaurant) {
+      throw new NotFoundException(`Aucun restaurant trouvé pour ce propriétaire`);
+    }
+
+    return restaurant;
   }
 } 

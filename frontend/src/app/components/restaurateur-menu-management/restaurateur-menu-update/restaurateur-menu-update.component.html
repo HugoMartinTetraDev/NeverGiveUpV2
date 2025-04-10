@@ -12,8 +12,15 @@
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Nom</mat-label>
         <input matInput placeholder="ex : Classic Burger Menu" 
-               [(ngModel)]="menu.name" name="name" required>
+               [(ngModel)]="menu.name" name="name" required
+               minlength="3" maxlength="50">
         <mat-icon matSuffix>fastfood</mat-icon>
+        <mat-error *ngIf="menuForm.controls['name'] && menuForm.controls['name'].errors && menuForm.controls['name'].errors['required']">
+          Le nom est obligatoire
+        </mat-error>
+        <mat-error *ngIf="menuForm.controls['name'] && menuForm.controls['name'].errors && menuForm.controls['name'].errors['minlength']">
+          Le nom doit contenir au moins 3 caractères
+        </mat-error>
       </mat-form-field>
 
       <div class="photo-upload">
@@ -21,10 +28,26 @@
         <div class="upload-container">
           <input type="file" #fileInput style="display: none" 
                  accept="image/*" (change)="onFileSelected($event)">
-          <button mat-raised-button color="primary" (click)="fileInput.click()">
+          <button mat-raised-button color="primary" (click)="fileInput.click()"
+                  [disabled]="isImageLoading">
             <mat-icon>upload</mat-icon>
             PARCOURIR LES FICHIERS
           </button>
+          
+          <div *ngIf="isImageLoading" class="loading-progress">
+            <mat-progress-bar mode="indeterminate" *ngIf="!uploadProgress"></mat-progress-bar>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress && uploadProgress.progress || 0" *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'"></mat-progress-bar>
+            <span *ngIf="!uploadProgress">Traitement de l'image en cours...</span>
+            <span *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'">
+              Upload en cours: {{ uploadProgress.progress }}%
+            </span>
+          </div>
+          
+          <div *ngIf="imageError" class="image-error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ imageError }}</span>
+          </div>
+          
           @if (menu.image) {
             <div class="image-preview">
               <img [src]="menu.image" [alt]="menu.name">
@@ -41,34 +64,76 @@
         <mat-label>Description (optionnelle)</mat-label>
         <textarea matInput placeholder="ex : Pain, salade, tomate, oignon..."
                   [(ngModel)]="menu.description" name="description"
-                  rows="3"></textarea>
+                  rows="3" maxlength="200"></textarea>
         <mat-icon matSuffix>description</mat-icon>
+        <mat-hint align="end">{{ menu.description ? menu.description.length : 0 }}/200</mat-hint>
       </mat-form-field>
 
       <div class="articles-section">
-        <h3>Articles</h3>
+        <h3>
+          Articles
+          <span *ngIf="hasSelectedItems()" class="selected-count">
+            ({{ getSelectedCount() }} sélectionnés)
+          </span>
+        </h3>
+        
+        <div class="search-box">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Rechercher des articles</mat-label>
+            <input matInput [(ngModel)]="searchQuery" name="searchQuery" 
+                   (ngModelChange)="filterItems()" placeholder="Nom ou description...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        
         <div class="article-list">
-          @for (item of availableItems; track item.id) {
-            <mat-checkbox [(ngModel)]="item.selected" 
-                        [name]="'item-' + item.id"
-                        color="primary"
-                        class="article-checkbox">
-              <div class="article-info">
-                <span class="article-name">{{ item.name }}</span>
-                <span class="article-price">{{ item.price }}€</span>
-              </div>
-            </mat-checkbox>
+          @if (isLoading) {
+            <div class="loading-container">
+              <mat-spinner diameter="40"></mat-spinner>
+              <p>Chargement des articles...</p>
+            </div>
+          } @else if (availableItems.length === 0) {
+            <p class="no-items">Aucun article disponible. Veuillez d'abord créer des articles.</p>
+          } @else if (filteredItems.length === 0) {
+            <p class="no-items">Aucun article ne correspond à votre recherche.</p>
+          } @else {
+            @for (item of filteredItems; track item.id) {
+              <mat-checkbox [(ngModel)]="item.selected" 
+                          [name]="'item-' + item.id"
+                          color="primary"
+                          class="article-checkbox">
+                <div class="article-info">
+                  <span class="article-name">{{ item.name }}</span>
+                  <span class="article-price">{{ item.price }}€</span>
+                </div>
+              </mat-checkbox>
+            }
           }
         </div>
       </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Prix</mat-label>
-        <input matInput type="number" placeholder="ex : 12.00 €"
-               [(ngModel)]="menu.price" name="price" required
-               min="0" step="0.50">
-        <mat-icon matSuffix>euro</mat-icon>
-      </mat-form-field>
+      <div class="price-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Prix</mat-label>
+          <input matInput type="number" placeholder="ex : 12.00 €"
+                [(ngModel)]="menu.price" name="price" required
+                min="0.1" step="0.50">
+          <mat-icon matSuffix>euro</mat-icon>
+          <mat-error *ngIf="menuForm.controls['price'] && menuForm.controls['price'].errors && menuForm.controls['price'].errors['required']">
+            Le prix est obligatoire
+          </mat-error>
+          <mat-error *ngIf="menuForm.controls['price'] && menuForm.controls['price'].errors && menuForm.controls['price'].errors['min']">
+            Le prix doit être supérieur à 0
+          </mat-error>
+        </mat-form-field>
+        
+        <button mat-stroked-button color="primary" type="button"
+                [disabled]="!hasSelectedItems()"
+                (click)="calculateSuggestedPrice()">
+          <mat-icon>calculate</mat-icon>
+          Prix suggéré
+        </button>
+      </div>
     </form>
     
     <mat-divider></mat-divider>
@@ -76,7 +141,7 @@
     <div class="dialog-actions">
       <button mat-button (click)="onCancel()">ANNULER</button>
       <button mat-raised-button color="primary" 
-              (click)="onSave()" [disabled]="!menuForm.valid">
+              (click)="onSave()" [disabled]="!menuForm.valid || isLoading || isImageLoading">
         SAUVEGARDER
       </button>
     </div>

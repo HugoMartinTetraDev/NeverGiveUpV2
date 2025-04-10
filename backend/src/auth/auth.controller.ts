@@ -3,12 +3,12 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
-import { Role } from '@prisma/client';
+import { Role } from '../common/enums';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { Auditable } from '../common/interceptors/audit.interceptor';
 
-@ApiTags('auth')
-@Controller('api/auth')
+@Controller('auth')
+@ApiTags('Authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

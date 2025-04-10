@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpHandler, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,13 @@ export class ApiService {
       params: new HttpParams({ fromObject: params || {} }),
       headers
     };
-    return this.http.get<T>(`${this.apiUrl}/${endpoint}`, options);
+    
+    const url = this.formatUrl(endpoint);
+    console.log(`API GET: ${url}`);
+    
+    return this.http.get<T>(url, options).pipe(
+      catchError(error => this.handleError(error, 'GET', endpoint))
+    );
   }
 
   /**
@@ -36,7 +43,12 @@ export class ApiService {
    * @param headers headers optionnels
    */
   post<T>(endpoint: string, body: any, headers?: HttpHeaders): Observable<T> {
-    return this.http.post<T>(`${this.apiUrl}/${endpoint}`, body, { headers });
+    const url = this.formatUrl(endpoint);
+    console.log(`API POST: ${url}`, body);
+    
+    return this.http.post<T>(url, body, { headers }).pipe(
+      catchError(error => this.handleError(error, 'POST', endpoint))
+    );
   }
 
   /**
@@ -46,24 +58,25 @@ export class ApiService {
    * @param headers headers optionnels
    */
   put<T>(endpoint: string, body: any, headers?: HttpHeaders): Observable<T> {
-    console.log(`APIService: PUT ${this.apiUrl}/${endpoint}`, body);
+    const url = this.formatUrl(endpoint);
+    console.log(`API PUT: ${url}`, body);
     
     // Assurez-vous d'avoir les headers d'autorisation si disponibles
     const token = localStorage.getItem('auth_token');
     let requestHeaders = headers || new HttpHeaders();
     
     if (token) {
-      console.log('Token trouvé, ajout à la requête');
       requestHeaders = requestHeaders.set('Authorization', `Bearer ${token}`);
-      console.log('Headers finaux:', requestHeaders.keys());
     } else {
       console.warn('Token non trouvé pour la requête PUT');
     }
     
     // Toujours utiliser les headers avec le token s'il est disponible
-    return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { 
+    return this.http.put<T>(url, body, { 
       headers: requestHeaders 
-    });
+    }).pipe(
+      catchError(error => this.handleError(error, 'PUT', endpoint))
+    );
   }
 
   /**
@@ -72,14 +85,24 @@ export class ApiService {
    * @param headers headers optionnels
    */
   delete<T>(endpoint: string, headers?: HttpHeaders): Observable<T> {
-    return this.http.delete<T>(`${this.apiUrl}/${endpoint}`, { headers });
+    const url = this.formatUrl(endpoint);
+    console.log(`API DELETE: ${url}`);
+    
+    return this.http.delete<T>(url, { headers }).pipe(
+      catchError(error => this.handleError(error, 'DELETE', endpoint))
+    );
   }
 
   /**
    * Effectue une requête PATCH
    */
   patch<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.patch<T>(`${this.apiUrl}/${endpoint}`, data);
+    const url = this.formatUrl(endpoint);
+    console.log(`API PATCH: ${url}`, data);
+    
+    return this.http.patch<T>(url, data).pipe(
+      catchError(error => this.handleError(error, 'PATCH', endpoint))
+    );
   }
 
   /**
@@ -89,11 +112,45 @@ export class ApiService {
   sendDirectRequest<T>(request: HttpRequest<any>): Observable<T> {
     // Modifier l'URL pour inclure l'URL de base de l'API si nécessaire
     if (!request.url.startsWith('http')) {
-      const url = `${this.apiUrl}/${request.url}`;
+      const url = this.formatUrl(request.url);
       request = request.clone({ url });
     }
     
     // Exécuter la requête directement avec le handler, sans passer par les intercepteurs
     return this.httpHandler.handle(request) as Observable<any>;
+  }
+
+  /**
+   * Formate l'URL en s'assurant qu'il n'y a pas de doubles slashes
+   */
+  private formatUrl(endpoint: string): string {
+    // Supprimer les slashes au début de l'endpoint et à la fin de l'apiUrl
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+    const cleanApiUrl = this.apiUrl.endsWith('/') ? this.apiUrl.slice(0, -1) : this.apiUrl;
+    
+    return `${cleanApiUrl}/${cleanEndpoint}`;
+  }
+
+  /**
+   * Gère les erreurs HTTP de manière uniforme
+   */
+  private handleError(error: HttpErrorResponse, method: string, endpoint: string) {
+    let errorMessage = 'Une erreur est survenue';
+    
+    if (error.error instanceof ErrorEvent) {
+      // Erreur côté client
+      errorMessage = `Erreur: ${error.error.message}`;
+    } else {
+      // Erreur côté serveur
+      errorMessage = `Code: ${error.status}, Message: ${error.message}`;
+      
+      // Ajouter des détails supplémentaires si disponibles
+      if (error.error?.message) {
+        errorMessage += ` - ${error.error.message}`;
+      }
+    }
+    
+    console.error(`API Error (${method} ${endpoint}):`, errorMessage, error);
+    return throwError(() => error);
   }
 } 

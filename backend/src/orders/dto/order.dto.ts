@@ -10,7 +10,7 @@ import {
   ArrayMinSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '../../common/enums';
 
 export class OrderItemDto {
   @ApiProperty({ example: 'article-id-1' })

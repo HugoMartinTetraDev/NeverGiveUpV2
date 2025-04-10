@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/commo
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto/user.dto';
 import * as bcrypt from 'bcrypt';
-import { Role, UserStatus } from '@prisma/client';
+import { Role, UserStatus } from '../common/enums';
 
 @Injectable()
 export class UsersService {

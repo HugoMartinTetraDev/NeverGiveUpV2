@@ -1,4 +1,5 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { Role } from '../common/enums';
 
 /**
  * Script pour ajouter des rôles par défaut aux utilisateurs existants
