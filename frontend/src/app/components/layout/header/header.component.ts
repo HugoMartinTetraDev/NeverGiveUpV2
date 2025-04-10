@@ -13,6 +13,7 @@ import { CartService } from '../../../services/cart.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { UserRole } from '../../../models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -43,6 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   totalCartItems = 0;
   private notificationSubscription: Subscription;
   private cartSubscription: Subscription;
+  private authSubscription: Subscription;
   isLoginPage = false;
 
   constructor(
@@ -64,6 +66,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(() => {
       this.isLoginPage = this.router.url === '/login' || this.router.url === '/';
     });
+
+    // Surveiller les changements d'utilisateur
+    this.authSubscription = this.authService.currentUser$.subscribe(user => {
+      if (user && user.roles && user.roles.includes(UserRole.CUSTOMER)) {
+        // Émettre l'événement pour ouvrir le menu latéral pour les clients
+        // Attendre un peu pour s'assurer que tout est chargé
+        setTimeout(() => {
+          this.menuClick.emit();
+        }, 500);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -76,6 +89,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
+    }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 
@@ -102,6 +118,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onCityChange(term: string) {
     this.searchService.updateCityTerm(term);
   }
-
-
 }
