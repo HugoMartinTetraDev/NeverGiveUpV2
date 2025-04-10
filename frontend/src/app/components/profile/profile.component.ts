@@ -113,14 +113,20 @@ export class ProfileComponent implements OnInit {
 
   formatBirthDate(dateString: string | Date): string {
     try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
+      if (!dateString) {
         return '';
       }
+      
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        console.error('Date invalide:', dateString);
+        return '';
+      }
+      
       // Pour l'affichage dans le profil, format français
       return formatDate(date, 'dd/MM/yyyy', 'fr-FR');
     } catch (error) {
-      console.error('Erreur lors du formatage de la date:', error);
+      console.error('Erreur lors du formatage de la date:', error, dateString);
       return '';
     }
   }

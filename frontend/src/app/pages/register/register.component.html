@@ -11,7 +11,7 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <div class="form-row">
         <div class="form-group">
-          <label for="firstName">Prénom</label>
+          <label for="firstName">Prénom <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="firstName" 
@@ -25,7 +25,7 @@
         </div>
         
         <div class="form-group">
-          <label for="lastName">Nom</label>
+          <label for="lastName">Nom <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="lastName" 
@@ -40,7 +40,7 @@
       </div>
       
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="email">Email <span class="required-field">*</span></label>
         <input 
           type="email" 
           id="email" 
@@ -56,7 +56,7 @@
       
       <div class="form-row">
         <div class="form-group">
-          <label for="password">Mot de passe</label>
+          <label for="password">Mot de passe <span class="required-field">*</span></label>
           <input 
             type="password" 
             id="password" 
@@ -71,7 +71,7 @@
         </div>
         
         <div class="form-group">
-          <label for="confirmPassword">Confirmer le mot de passe</label>
+          <label for="confirmPassword">Confirmer le mot de passe <span class="required-field">*</span></label>
           <input 
             type="password" 
             id="confirmPassword" 
@@ -101,7 +101,7 @@
       </div>
       
       <div class="form-group">
-        <label for="address">Adresse</label>
+        <label for="address">Adresse <span class="required-field">*</span></label>
         <input 
           type="text" 
           id="address" 
@@ -111,7 +111,7 @@
       </div>
       
       <div class="form-group">
-        <label for="birthDate">Date de naissance</label>
+        <label for="birthDate">Date de naissance <span class="required-field">*</span></label>
         <input 
           type="date" 
           id="birthDate" 
@@ -119,6 +119,7 @@
           placeholder="JJ/MM/AAAA"
           [ngClass]="{'is-invalid': registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.touched}"
         >
+        <div class="hint-text">Format: AAAA-MM-JJ (séléctionnez avec le calendrier)</div>
         <div class="error-message" *ngIf="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.touched">
           <span *ngIf="registerForm.get('birthDate')?.errors?.['required']">La date de naissance est requise</span>
         </div>
@@ -210,7 +211,7 @@
         <h3>Informations du restaurant</h3>
         
         <div class="form-group">
-          <label for="restaurantName">Nom du restaurant</label>
+          <label for="restaurantName">Nom du restaurant <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="restaurantName" 
@@ -234,7 +235,7 @@
         </div>
         
         <div class="form-group">
-          <label for="siretNumber">Numéro SIRET</label>
+          <label for="siretNumber">Numéro SIRET <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="siretNumber" 
@@ -247,50 +248,48 @@
           </div>
         </div>
         
-        <div class="form-row">
-          <div class="form-group">
-            <label for="restaurantAddress">Adresse du restaurant</label>
-            <input 
-              type="text" 
-              id="restaurantAddress" 
-              formControlName="restaurantAddress" 
-              placeholder="Entrez l'adresse du restaurant"
-              [ngClass]="{'is-invalid': registerForm.get('restaurantAddress')?.invalid && registerForm.get('restaurantAddress')?.touched}"
-            >
-            <div class="error-message" *ngIf="registerForm.get('restaurantAddress')?.invalid && registerForm.get('restaurantAddress')?.touched">
-              <span *ngIf="registerForm.get('restaurantAddress')?.errors?.['required']">L'adresse du restaurant est requise</span>
-            </div>
+        <div class="form-group">
+          <label for="restaurantAddress">Adresse du restaurant <span class="required-field">*</span></label>
+          <input 
+            type="text" 
+            id="restaurantAddress" 
+            formControlName="restaurantAddress" 
+            placeholder="Entrez l'adresse du restaurant"
+            [ngClass]="{'is-invalid': registerForm.get('restaurantAddress')?.invalid && registerForm.get('restaurantAddress')?.touched}"
+          >
+          <div class="error-message" *ngIf="registerForm.get('restaurantAddress')?.invalid && registerForm.get('restaurantAddress')?.touched">
+            <span *ngIf="registerForm.get('restaurantAddress')?.errors?.['required']">L'adresse du restaurant est requise</span>
           </div>
         </div>
         
         <div class="form-group">
-          <label for="restaurantPhone">Téléphone du restaurant</label>
+          <label for="restaurantPhone">Téléphone du restaurant <span class="required-field">*</span></label>
           <input 
             type="tel" 
             id="restaurantPhone" 
             formControlName="restaurantPhone" 
-            placeholder="Enter restaurant phone number"
+            placeholder="Entrez le numéro de téléphone du restaurant"
             [ngClass]="{'is-invalid': registerForm.get('restaurantPhone')?.invalid && registerForm.get('restaurantPhone')?.touched}"
           >
           <div class="error-message" *ngIf="registerForm.get('restaurantPhone')?.invalid && registerForm.get('restaurantPhone')?.touched">
-            <span *ngIf="registerForm.get('restaurantPhone')?.errors?.['required']">Restaurant phone is required</span>
+            <span *ngIf="registerForm.get('restaurantPhone')?.errors?.['required']">Le téléphone du restaurant est requis</span>
           </div>
         </div>
 
         
         <div class="form-group">
-          <label for="deliveryFee">Frais de livraison (€)</label>
+          <label for="deliveryFee">Frais de livraison (€) <span class="required-field">*</span></label>
           <input 
             type="number" 
             id="deliveryFee" 
             formControlName="deliveryFee" 
-            placeholder="Enter delivery fee"
+            placeholder="Entrez les frais de livraison"
             min="0"
             step="0.5"
             [ngClass]="{'is-invalid': registerForm.get('deliveryFee')?.invalid && registerForm.get('deliveryFee')?.touched}"
           >
           <div class="error-message" *ngIf="registerForm.get('deliveryFee')?.invalid && registerForm.get('deliveryFee')?.touched">
-            <span *ngIf="registerForm.get('deliveryFee')?.errors?.['required']">Delivery fee is required</span>
+            <span *ngIf="registerForm.get('deliveryFee')?.errors?.['required']">Les frais de livraison sont requis</span>
           </div>
         </div>
       </div>
@@ -300,7 +299,7 @@
         <h3>Informations du livreur</h3>
         
         <div class="form-group">
-          <label for="delivererPhoneNumber">Numéro de téléphone professionnel</label>
+          <label for="delivererPhoneNumber">Numéro de téléphone professionnel <span class="required-field">*</span></label>
           <input 
             type="tel" 
             id="delivererPhoneNumber" 
@@ -315,7 +314,7 @@
         </div>
 
         <div class="form-group">
-          <label for="delivererSiretNumber">Numéro SIRET</label>
+          <label for="delivererSiretNumber">Numéro SIRET <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="delivererSiretNumber" 
@@ -330,7 +329,7 @@
         </div>
 
         <div class="form-group">
-          <label for="accountHolderName">Nom du titulaire du compte</label>
+          <label for="accountHolderName">Nom du titulaire du compte <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="accountHolderName" 
@@ -344,7 +343,7 @@
         </div>
 
         <div class="form-group">
-          <label for="iban">IBAN</label>
+          <label for="iban">IBAN <span class="required-field">*</span></label>
           <input 
             type="text" 
             id="iban" 
@@ -395,7 +394,7 @@
       </div>
       
       <div class="terms-agreement">
-        By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        En créant un compte, vous acceptez nos <a href="#">Conditions d'utilisation</a> et notre <a href="#">Politique de confidentialité</a>.
       </div>
       
       <div class="form-actions">

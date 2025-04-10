@@ -22,6 +22,7 @@ interface UserProfile {
   password: string;
   address: string;
   referralCode: string;
+  birthDateObj: Date | null;
 }
 
 @Component({
@@ -48,12 +49,13 @@ export class ProfileUpdateComponent implements OnInit {
     email: '',
     password: '',
     address: '',
-    referralCode: ''
+    referralCode: '',
+    birthDateObj: null
   };
   
-  originalProfile: UserProfile | null = null;
-  isLoading: boolean = false;
-  isSaving: boolean = false;
+  originalProfile?: UserProfile;
+  isLoading = false;
+  isSaving = false;
 
   constructor(
     private router: Router,
@@ -81,7 +83,8 @@ export class ProfileUpdateComponent implements OnInit {
         email: currentUser.email || '',
         password: '', // Le champ mot de passe est vide dans le formulaire de modification
         address: currentUser.address || '',
-        referralCode: currentUser.referralCode || ''
+        referralCode: currentUser.referralCode || '',
+        birthDateObj: currentUser.birthDate ? new Date(currentUser.birthDate) : null
       };
       
       console.log('Date de naissance chargée:', this.userProfile.birthDate);
@@ -100,7 +103,8 @@ export class ProfileUpdateComponent implements OnInit {
             email: profile.email || '',
             password: '', // Le champ mot de passe est vide dans le formulaire de modification
             address: profile.address || '',
-            referralCode: profile.referralCode || ''
+            referralCode: profile.referralCode || '',
+            birthDateObj: profile.birthDate ? new Date(profile.birthDate) : null
           };
           
           console.log('Date de naissance chargée depuis API:', this.userProfile.birthDate);
@@ -143,7 +147,7 @@ export class ProfileUpdateComponent implements OnInit {
   onSave(): void {
     console.log('Bouton Sauvegarder cliqué', this.userProfile);
     
-    if (!this.hasChanges()) {
+    if (!this.hasChanges() && !this.birthDateChanged()) {
       this.notificationService.info('Aucune modification détectée');
       this.router.navigate(['/compte']);
       return;
@@ -163,30 +167,11 @@ export class ProfileUpdateComponent implements OnInit {
       updatedData.lastName = this.userProfile.lastName;
     }
     
-    if (this.userProfile.birthDate !== this.originalProfile?.birthDate) {
-      // S'assurer que la date est au bon format pour l'API
-      try {
-        // Extraire les parties de la date au format JJ/MM/AAAA
-        const dateParts = this.userProfile.birthDate.split('/');
-        if (dateParts.length === 3) {
-          // Créer une date au format Date (AAAA-MM-JJ)
-          const formattedDate = new Date(
-            parseInt(dateParts[2]), // année
-            parseInt(dateParts[1]) - 1, // mois (0-11)
-            parseInt(dateParts[0]) // jour
-          );
-          
-          if (!isNaN(formattedDate.getTime())) {
-            updatedData.birthDate = formattedDate;
-            console.log('Date formatée pour l\'API:', formattedDate);
-          } else {
-            console.error('Format de date invalide après conversion:', this.userProfile.birthDate);
-          }
-        } else {
-          console.error('Format de date invalide (devrait être JJ/MM/AAAA):', this.userProfile.birthDate);
-        }
-      } catch (error) {
-        console.error('Erreur lors de la conversion de la date:', error);
+    // Vérifier si la date a changé en utilisant l'objet Date du datepicker
+    if (this.birthDateChanged()) {
+      if (this.userProfile.birthDateObj) {
+        updatedData.birthDate = this.userProfile.birthDateObj;
+        console.log('Date formatée pour l\'API:', this.userProfile.birthDateObj);
       }
     }
     
@@ -235,9 +220,37 @@ export class ProfileUpdateComponent implements OnInit {
     return !!(
       this.userProfile.firstName !== this.originalProfile.firstName ||
       this.userProfile.lastName !== this.originalProfile.lastName ||
-      this.userProfile.birthDate !== this.originalProfile.birthDate ||
       this.userProfile.address !== this.originalProfile.address ||
       (this.userProfile.password && this.userProfile.password.trim() !== '')
     );
+  }
+
+  /**
+   * Vérifie si la date de naissance a été modifiée
+   */
+  birthDateChanged(): boolean {
+    if (!this.originalProfile?.birthDate && !this.userProfile.birthDateObj) {
+      return false;
+    }
+    
+    if (!this.originalProfile?.birthDate && this.userProfile.birthDateObj) {
+      return true;
+    }
+    
+    if (this.originalProfile?.birthDate && !this.userProfile.birthDateObj) {
+      return true;
+    }
+    
+    const originalDate = new Date(this.originalProfile?.birthDate || '');
+    
+    if (isNaN(originalDate.getTime())) {
+      return this.userProfile.birthDateObj !== null;
+    }
+    
+    if (!this.userProfile.birthDateObj) {
+      return true;
+    }
+    
+    return originalDate.toISOString().split('T')[0] !== this.userProfile.birthDateObj.toISOString().split('T')[0];
   }
 } 

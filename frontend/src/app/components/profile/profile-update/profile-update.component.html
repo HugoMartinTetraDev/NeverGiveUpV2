@@ -19,8 +19,10 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Date de naissance</mat-label>
-      <input matInput [(ngModel)]="userProfile.birthDate" placeholder="jj/mm/aaaa">
-      <mat-hint>Format : JJ/MM/AAAA (ex: 17/11/2003)</mat-hint>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="userProfile.birthDateObj" placeholder="jj/mm/aaaa">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-hint>Format : JJ/MM/AAAA</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
