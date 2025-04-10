@@ -14,7 +14,7 @@ export interface User {
   address: string;
   referralCode: string;
   status: 'Actif' | 'Suspendu';
-  roles: UserRole[];
+  roles: UserRole[] | string[];
   password?: string;
   phoneNumber?: string;
   city?: string;

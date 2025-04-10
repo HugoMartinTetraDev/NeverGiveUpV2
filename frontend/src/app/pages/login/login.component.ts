@@ -49,8 +49,12 @@ export class LoginComponent implements OnInit {
         finalize(() => this.isLoading = false)
       )
       .subscribe({
-        next: () => {
-          this.router.navigate(['/landing']);
+        next: (response) => {
+          console.log('Utilisateur connecté avec succès:', response);
+          console.log('Rôles utilisateur:', response.user.roles);
+          
+          // Force refresh to ensure sidebar updates correctly
+          window.location.href = '/landing';
         },
         error: (error) => {
           console.error('Erreur de connexion:', error);
