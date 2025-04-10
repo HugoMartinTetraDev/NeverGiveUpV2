@@ -27,6 +27,7 @@ import { RestaurateurItemUpdateComponent } from '../restaurateur-item-update/res
 })
 export class RestaurateurMenuManagementComponent implements OnInit {
   restaurant!: Restaurant;
+  restaurantId = '1'; // ID du restaurant du restaurateur connecté
 
   constructor(
     private dialog: MatDialog,
@@ -34,7 +35,8 @@ export class RestaurateurMenuManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.restaurantService.getRestaurant().subscribe(restaurant => {
+    // Récupérer l'ID du restaurant du restaurateur connecté (à implémenter avec AuthService)
+    this.restaurantService.getRestaurantById(this.restaurantId).subscribe(restaurant => {
       this.restaurant = restaurant;
     });
   }
@@ -48,9 +50,9 @@ export class RestaurateurMenuManagementComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (menu) {
-          this.restaurantService.updateMenu(result);
+          this.restaurantService.updateMenu(this.restaurantId, result).subscribe();
         } else {
-          this.restaurantService.createMenu(result);
+          this.restaurantService.createMenu(this.restaurantId, result).subscribe();
         }
       }
     });
@@ -65,9 +67,9 @@ export class RestaurateurMenuManagementComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (item) {
-          this.restaurantService.updateArticle(result);
+          this.restaurantService.updateArticle(this.restaurantId, result).subscribe();
         } else {
-          this.restaurantService.createArticle(result);
+          this.restaurantService.createArticle(this.restaurantId, result).subscribe();
         }
       }
     });
@@ -84,7 +86,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.restaurantService.deleteMenu(menu.id);
+        this.restaurantService.deleteMenu(this.restaurantId, menu.id).subscribe();
       }
     });
   }
@@ -100,7 +102,7 @@ export class RestaurateurMenuManagementComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.restaurantService.deleteArticle(item.id);
+        this.restaurantService.deleteArticle(this.restaurantId, item.id).subscribe();
       }
     });
   }

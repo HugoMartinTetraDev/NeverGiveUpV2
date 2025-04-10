@@ -24,9 +24,17 @@ export class OrderViewComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        // In a real application, we would get the order ID from the route
-        // and fetch the specific order. For now, we'll use the mock data.
-        this.orderService.getCurrentOrder().subscribe(order => {
+        // Récupérer l'ID de la commande depuis la route
+        this.route.paramMap.subscribe(params => {
+            const orderId = params.get('id');
+            if (orderId) {
+                this.loadOrder(orderId);
+            }
+        });
+    }
+
+    loadOrder(orderId: string) {
+        this.orderService.getOrderById(orderId).subscribe(order => {
             this.order = order;
         });
     }

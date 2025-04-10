@@ -1,70 +1,121 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { Order, OrderHistory } from '../models/order.model';
 import { CartService } from './cart.service';
+import { ApiService } from './api.service';
+import { NotificationService } from './notification.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class OrderService {
-    private currentOrder: Order | null = {
-        id: '9845',
-        date: new Date('2025-03-21T05:24:32'),
-        items: [
-            { quantity: 1, name: 'Cola', price: 2.00, image: 'assets/images/cola.jpg' },
-            { quantity: 2, name: 'Kebab', price: 7.50, image: 'assets/images/kebab.jpg' }
-        ],
-        subtotal: 17.00,
-        fees: {
-            amount: 6.00,
-            percentage: 30
-        },
-        total: 23.00,
-        status: [
-            { timestamp: '06:23:21', status: 'Commande acceptée' },
-            { timestamp: '06:25:32', status: 'Commande en cours de préparation' }
-        ]
-    };
+    private currentOrderSubject = new BehaviorSubject<Order | null>(null);
+    public currentOrder$ = this.currentOrderSubject.asObservable();
 
-    private orderHistory: OrderHistory[] = [
-        { id: 1, dateTime: new Date('2025-03-21T08:57:21'), amount: 25.98, paymentType: 'Carte Bancaire' },
-        { id: 2, dateTime: new Date('2025-03-21T08:57:21'), amount: 13.45, paymentType: 'PayPal' },
-        { id: 3, dateTime: new Date('2025-03-21T08:57:21'), amount: 32.99, paymentType: 'Apple Pay' }
-    ];
+    constructor(
+        private cartService: CartService,
+        private apiService: ApiService,
+        private notificationService: NotificationService
+    ) {}
 
-    constructor(private cartService: CartService) {}
-
-    getCurrentOrder(): Observable<Order | null> {
-        return of(this.currentOrder);
+    /**
+     * Récupère toutes les commandes de l'utilisateur connecté
+     */
+    getOrders(): Observable<Order[]> {
+        return this.apiService.get<Order[]>('orders').pipe(
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la récupération des commandes');
+                return throwError(() => error);
+            })
+        );
     }
 
+    /**
+     * Récupère les détails d'une commande par son ID
+     */
+    getOrderById(orderId: string): Observable<Order> {
+        return this.apiService.get<Order>(`orders/${orderId}`).pipe(
+            tap(order => this.currentOrderSubject.next(order)),
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la récupération de la commande');
+                return throwError(() => error);
+            })
+        );
+    }
+
+    /**
+     * Crée une nouvelle commande
+     */
+    createOrder(order: Partial<Order>): Observable<Order> {
+        return this.apiService.post<Order>('orders', order).pipe(
+            tap(newOrder => {
+                this.currentOrderSubject.next(newOrder);
+                this.notificationService.success('Commande créée avec succès');
+                // Vider le panier après création de la commande
+                this.cartService.clearCart();
+            }),
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la création de la commande');
+                return throwError(() => error);
+            })
+        );
+    }
+
+    /**
+     * Met à jour le statut d'une commande
+     */
+    updateOrderStatus(orderId: string, status: string): Observable<Order> {
+        return this.apiService.put<Order>(`orders/${orderId}/status`, { status }).pipe(
+            tap(updatedOrder => {
+                this.currentOrderSubject.next(updatedOrder);
+                this.notificationService.success('Statut de la commande mis à jour');
+            }),
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la mise à jour du statut');
+                return throwError(() => error);
+            })
+        );
+    }
+
+    /**
+     * Récupère l'historique des commandes de l'utilisateur
+     */
     getOrderHistory(): Observable<OrderHistory[]> {
-        return of(this.orderHistory);
+        return this.apiService.get<Order[]>('orders').pipe(
+            map(orders => orders.map(order => {
+                // Extraction du type de paiement depuis les détails de statut si disponible
+                const paymentInfo = order.status.find(s => s.status.includes('Payé'));
+                const paymentType = paymentInfo ? 
+                    paymentInfo.status.replace('Payé par ', '') : 
+                    'Non spécifié';
+                
+                return {
+                    id: +order.id, // Convertir en nombre
+                    dateTime: new Date(order.date),
+                    amount: order.total,
+                    paymentType
+                } as OrderHistory;
+            })),
+            catchError(error => {
+                this.notificationService.error('Erreur lors de la récupération de l\'historique');
+                return throwError(() => error);
+            })
+        );
     }
 
-    updateOrder(order: Order): Observable<Order> {
-        this.currentOrder = order;
-        return of(order);
-    }
-
-    deleteOrder(orderId: string): Observable<boolean> {
-        if (this.currentOrder?.id === orderId) {
-            this.currentOrder = null;
-            return of(true);
-        }
-        return of(false);
-    }
-
+    /**
+     * Recrée une commande en ajoutant ses articles au panier
+     */
     moveOrderToCart(order: Order): Observable<boolean> {
         if (!order) return of(false);
         
-        // Clear existing cart items
+        // Vider le panier existant
         this.cartService.clearCart();
         
-        // Add order items to cart
+        // Ajouter les articles de la commande au panier
         order.items.forEach(item => {
             this.cartService.addToCart({
-                id: Date.now().toString(),
+                id: Date.now().toString(), // Générer un nouvel ID
                 name: item.name,
                 price: item.price,
                 quantity: item.quantity,
@@ -72,7 +123,7 @@ export class OrderService {
             });
         });
 
-        // Delete the order
-        return this.deleteOrder(order.id);
+        this.notificationService.success('Commande ajoutée au panier');
+        return of(true);
     }
 } 

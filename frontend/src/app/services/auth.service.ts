@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { User, UserRole, AuthResponse } from '../models/user.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private readonly TOKEN_KEY = 'auth_token';
 
-  constructor() {
+  constructor(private apiService: ApiService) {
     this.loadStoredUser();
   }
 
@@ -22,6 +23,10 @@ export class AuthService {
         const userData = localStorage.getItem('user_data');
         if (userData) {
           this.currentUserSubject.next(JSON.parse(userData));
+        } else {
+          // Si nous avons un token mais pas de données utilisateur,
+          // nous récupérons le profil de l'utilisateur
+          this.getUserProfile().subscribe();
         }
       } catch (e) {
         this.logout();
@@ -29,60 +34,64 @@ export class AuthService {
     }
   }
 
-  // Mock implementation for local development
+  /**
+   * Crée un nouveau compte utilisateur
+   */
   register(userData: User): Observable<AuthResponse> {
-    // Add a fake ID and dates to simulate a backend response
-    const user: User = {
-      ...userData,
-      id: Date.now(), // Use timestamp as numeric ID
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    const response: AuthResponse = {
-      user,
-      token: 'fake-token-' + Math.random().toString(36).substring(2)
-    };
-    
-    // Simulate API delay
-    return of(response).pipe(
-      delay(500), // Delay to simulate network request
-    );
+    return this.apiService.post<AuthResponse>('auth/register', userData)
+      .pipe(
+        tap(response => this.handleAuthentication(response)),
+        catchError(error => {
+          return throwError(() => error);
+        })
+      );
   }
 
-  // Mock implementation for local development
+  /**
+   * Connecte un utilisateur avec ses identifiants
+   */
   login(email: string, password: string): Observable<AuthResponse> {
-    // Hardcoded mock user for testing
-    const user: User = {
-      id: Date.now(), // Use timestamp as numeric ID
-      email,
-      firstName: 'Test',
-      lastName: 'User',
-      roles: [UserRole.CUSTOMER],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      birthDate: new Date(),
-      address: '',
-      referralCode: '',
-      status: 'Actif'
-    };
-    
-    const response: AuthResponse = {
-      user,
-      token: 'fake-token-' + Math.random().toString(36).substring(2)
-    };
-    
-    // Save to localStorage to simulate persistence
-    localStorage.setItem(this.TOKEN_KEY, response.token);
-    localStorage.setItem('user_data', JSON.stringify(user));
-    this.currentUserSubject.next(user);
-    
-    // Simulate API delay
-    return of(response).pipe(
-      delay(500), // Delay to simulate network request
-    );
+    return this.apiService.post<AuthResponse>('auth/login', { email, password })
+      .pipe(
+        tap(response => this.handleAuthentication(response)),
+        catchError(error => {
+          return throwError(() => error);
+        })
+      );
   }
 
+  /**
+   * Récupère le profil de l'utilisateur connecté
+   */
+  getUserProfile(): Observable<User> {
+    return this.apiService.get<User>('users/profile')
+      .pipe(
+        tap(user => {
+          localStorage.setItem('user_data', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }),
+        catchError(error => {
+          // Si erreur 401, on déconnecte l'utilisateur
+          if (error.status === 401) {
+            this.logout();
+          }
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
+   * Gère l'authentification après login/register
+   */
+  private handleAuthentication(response: AuthResponse): void {
+    localStorage.setItem(this.TOKEN_KEY, response.token);
+    localStorage.setItem('user_data', JSON.stringify(response.user));
+    this.currentUserSubject.next(response.user);
+  }
+
+  /**
+   * Déconnecte l'utilisateur
+   */
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem('user_data');

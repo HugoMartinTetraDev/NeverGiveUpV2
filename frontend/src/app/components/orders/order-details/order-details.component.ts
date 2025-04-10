@@ -37,12 +37,14 @@ export class OrderDetailsComponent implements OnInit {
     }
 
     loadOrder() {
-        this.orderService.getCurrentOrder().subscribe(order => {
+        this.orderService.currentOrder$.subscribe(order => {
             this.currentOrder = order;
         });
     }
 
     onModify() {
+        if (!this.currentOrder) return;
+        
         const dialogRef = this.dialog.open(ModifyOrderDialogComponent, {
             width: '480px',
             disableClose: true,
@@ -52,7 +54,7 @@ export class OrderDetailsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.currentOrder = null;
+                this.orderService.moveOrderToCart(this.currentOrder!).subscribe();
             }
         });
     }
@@ -66,11 +68,7 @@ export class OrderDetailsComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result && this.currentOrder) {
-                this.orderService.deleteOrder(this.currentOrder.id).subscribe(success => {
-                    if (success) {
-                        this.currentOrder = null;
-                    }
-                });
+                this.currentOrder = null;
             }
         });
     }
