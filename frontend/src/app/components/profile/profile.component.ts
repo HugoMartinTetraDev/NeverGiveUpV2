@@ -12,6 +12,7 @@ import { NotificationService } from '../../services/notification.service';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 interface UserProfile {
   firstName: string;
@@ -35,7 +36,8 @@ interface UserProfile {
     MatButtonModule,
     MatDialogModule,
     MatSnackBarModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule
   ]
 })
 export class ProfileComponent implements OnInit {
@@ -115,6 +117,7 @@ export class ProfileComponent implements OnInit {
       if (isNaN(date.getTime())) {
         return '';
       }
+      // Pour l'affichage dans le profil, format français
       return formatDate(date, 'dd/MM/yyyy', 'fr-FR');
     } catch (error) {
       console.error('Erreur lors du formatage de la date:', error);

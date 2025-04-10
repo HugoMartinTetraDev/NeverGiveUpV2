@@ -32,6 +32,11 @@ export class UsersService {
       data.birthDate = new Date(data.birthDate);
     }
 
+    // Hash password if provided
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+
     // Update user
     const updatedUser = await this.prisma.user.update({
       where: { id },

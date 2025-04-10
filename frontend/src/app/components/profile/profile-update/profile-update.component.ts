@@ -10,6 +10,9 @@ import { UserService } from '../../../services/user.service';
 import { User } from '../../../models/user.model';
 import { finalize } from 'rxjs/operators';
 import { NotificationService } from '../../../services/notification.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 interface UserProfile {
   firstName: string;
@@ -31,7 +34,10 @@ interface UserProfile {
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule
+    FormsModule,
+    MatProgressSpinnerModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class ProfileUpdateComponent implements OnInit {
@@ -71,12 +77,14 @@ export class ProfileUpdateComponent implements OnInit {
       this.userProfile = {
         firstName: currentUser.firstName || '',
         lastName: currentUser.lastName || '',
-        birthDate: currentUser.birthDate ? this.formatBirthDate(currentUser.birthDate) : '',
+        birthDate: currentUser.birthDate ? this.formatBirthDateForForm(currentUser.birthDate) : '',
         email: currentUser.email || '',
         password: '', // Le champ mot de passe est vide dans le formulaire de modification
         address: currentUser.address || '',
         referralCode: currentUser.referralCode || ''
       };
+      
+      console.log('Date de naissance chargée:', this.userProfile.birthDate);
       
       // Conserver une copie des données originales pour la comparaison
       this.originalProfile = {...this.userProfile};
@@ -88,12 +96,14 @@ export class ProfileUpdateComponent implements OnInit {
           this.userProfile = {
             firstName: profile.firstName || '',
             lastName: profile.lastName || '',
-            birthDate: profile.birthDate ? this.formatBirthDate(profile.birthDate) : '',
+            birthDate: profile.birthDate ? this.formatBirthDateForForm(profile.birthDate) : '',
             email: profile.email || '',
             password: '', // Le champ mot de passe est vide dans le formulaire de modification
             address: profile.address || '',
             referralCode: profile.referralCode || ''
           };
+          
+          console.log('Date de naissance chargée depuis API:', this.userProfile.birthDate);
           
           // Conserver une copie des données originales pour la comparaison
           this.originalProfile = {...this.userProfile};
@@ -110,20 +120,29 @@ export class ProfileUpdateComponent implements OnInit {
     }
   }
 
-  formatBirthDate(dateString: string | Date): string {
+  // Format pour l'affichage dans le formulaire (JJ/MM/AAAA)
+  formatBirthDateForForm(dateString: string | Date): string {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
         return '';
       }
-      return formatDate(date, 'yyyy-MM-dd', 'fr-FR');
+      // Format JJ/MM/AAAA pour les inputs
+      return formatDate(date, 'dd/MM/yyyy', 'fr-FR');
     } catch (error) {
-      console.error('Erreur lors du formatage de la date:', error);
+      console.error('Erreur lors du formatage de la date pour le formulaire:', error);
       return '';
     }
   }
 
+  // Ancienne méthode gardée pour compatibilité
+  formatBirthDate(dateString: string | Date): string {
+    return this.formatBirthDateForForm(dateString);
+  }
+
   onSave(): void {
+    console.log('Bouton Sauvegarder cliqué', this.userProfile);
+    
     if (!this.hasChanges()) {
       this.notificationService.info('Aucune modification détectée');
       this.router.navigate(['/compte']);
@@ -131,6 +150,7 @@ export class ProfileUpdateComponent implements OnInit {
     }
     
     this.isSaving = true;
+    console.log('Début de la sauvegarde...');
     
     // Préparer les données à envoyer (uniquement celles qui ont changé)
     const updatedData: Partial<User> = {};
@@ -144,7 +164,30 @@ export class ProfileUpdateComponent implements OnInit {
     }
     
     if (this.userProfile.birthDate !== this.originalProfile?.birthDate) {
-      updatedData.birthDate = new Date(this.userProfile.birthDate);
+      // S'assurer que la date est au bon format pour l'API
+      try {
+        // Extraire les parties de la date au format JJ/MM/AAAA
+        const dateParts = this.userProfile.birthDate.split('/');
+        if (dateParts.length === 3) {
+          // Créer une date au format Date (AAAA-MM-JJ)
+          const formattedDate = new Date(
+            parseInt(dateParts[2]), // année
+            parseInt(dateParts[1]) - 1, // mois (0-11)
+            parseInt(dateParts[0]) // jour
+          );
+          
+          if (!isNaN(formattedDate.getTime())) {
+            updatedData.birthDate = formattedDate;
+            console.log('Date formatée pour l\'API:', formattedDate);
+          } else {
+            console.error('Format de date invalide après conversion:', this.userProfile.birthDate);
+          }
+        } else {
+          console.error('Format de date invalide (devrait être JJ/MM/AAAA):', this.userProfile.birthDate);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la conversion de la date:', error);
+      }
     }
     
     if (this.userProfile.address !== this.originalProfile?.address) {
@@ -156,11 +199,17 @@ export class ProfileUpdateComponent implements OnInit {
       updatedData.password = this.userProfile.password;
     }
     
+    console.log('Données à mettre à jour:', updatedData);
+    
     // Appeler le service de mise à jour du profil
     this.userService.updateUserProfile(updatedData)
-      .pipe(finalize(() => this.isSaving = false))
+      .pipe(finalize(() => {
+        console.log('Fin de la requête de mise à jour');
+        this.isSaving = false;
+      }))
       .subscribe({
         next: (updatedUser) => {
+          console.log('Profil mis à jour avec succès:', updatedUser);
           this.notificationService.success('Profil mis à jour avec succès');
           
           // Mettre à jour les données utilisateur dans le service d'authentification
@@ -170,7 +219,7 @@ export class ProfileUpdateComponent implements OnInit {
           this.router.navigate(['/compte']);
         },
         error: (error) => {
-          console.error('Erreur lors de la mise à jour du profil:', error);
+          console.error('Erreur détaillée lors de la mise à jour du profil:', error);
           this.notificationService.error('Erreur lors de la mise à jour du profil');
         }
       });

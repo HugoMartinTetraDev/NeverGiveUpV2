@@ -177,6 +177,30 @@ export class RegisterComponent implements OnInit {
     return rolesArray.controls.some(control => control.value === role);
   }
 
+  /**
+   * Gère le clic sur le bouton d'inscription
+   */
+  onButtonClick(): void {
+    // Marquer tous les champs comme touchés pour afficher les erreurs
+    this.markFormGroupTouched(this.registerForm);
+    
+    // Vérifier si le formulaire est valide
+    if (this.registerForm.valid && this.rolesFormArray.length > 0) {
+      // Si le formulaire est valide, on soumet le formulaire
+      this.onSubmit();
+    } else {
+      // Sinon, on affiche un message d'erreur
+      if (this.rolesFormArray.length === 0) {
+        this.errorMessage = 'Veuillez sélectionner au moins un type de compte';
+      } else {
+        this.errorMessage = 'Veuillez corriger les erreurs dans le formulaire avant de continuer';
+      }
+      
+      // Debug des erreurs
+      this.debugForm();
+    }
+  }
+
   onSubmit(): void {
     // Log the overall form validity and values for debugging
     console.log('Form status:', {
@@ -184,27 +208,6 @@ export class RegisterComponent implements OnInit {
       rolesSelected: this.rolesFormArray.length > 0,
       formValue: this.registerForm.value
     });
-    
-    if (this.registerForm.invalid || this.rolesFormArray.length === 0) {
-      if (this.rolesFormArray.length === 0) {
-        this.errorMessage = 'Veuillez sélectionner au moins un type de compte';
-      } else {
-        this.errorMessage = 'Veuillez corriger les erreurs dans le formulaire avant de continuer';
-      }
-      
-      // Marquer tous les champs comme touchés pour afficher les erreurs
-      this.markFormGroupTouched(this.registerForm);
-      
-      // Log validation errors for debugging
-      Object.keys(this.registerForm.controls).forEach(key => {
-        const control = this.registerForm.get(key);
-        if (control && control.invalid) {
-          console.log(`Invalid field '${key}':`, control.errors);
-        }
-      });
-      
-      return;
-    }
     
     this.isLoading = true;
     this.errorMessage = '';
@@ -307,7 +310,7 @@ export class RegisterComponent implements OnInit {
   /**
    * Marque tous les contrôles d'un FormGroup comme touchés
    */
-  private markFormGroupTouched(formGroup: FormGroup) {
+  markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
       

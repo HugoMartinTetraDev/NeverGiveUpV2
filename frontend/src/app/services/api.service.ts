@@ -42,6 +42,17 @@ export class ApiService {
    * @param headers headers optionnels
    */
   put<T>(endpoint: string, body: any, headers?: HttpHeaders): Observable<T> {
+    console.log(`APIService: PUT ${this.apiUrl}/${endpoint}`, body);
+    
+    // Assurez-vous d'avoir les headers d'autorisation si disponibles
+    const token = localStorage.getItem('auth_token');
+    const authHeaders = headers || new HttpHeaders();
+    
+    if (token) {
+      const headersWithAuth = authHeaders.set('Authorization', `Bearer ${token}`);
+      return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { headers: headersWithAuth });
+    }
+    
     return this.http.put<T>(`${this.apiUrl}/${endpoint}`, body, { headers });
   }
 

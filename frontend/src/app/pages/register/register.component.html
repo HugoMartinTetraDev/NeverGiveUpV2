@@ -366,12 +366,40 @@
         <div class="error-content" [innerHTML]="formatErrorMessage(errorMessage)"></div>
       </div>
       
+      <div class="error-alert" *ngIf="registerForm.invalid && registerForm.touched && !errorMessage">
+        <div class="error-title">
+          <i class="fa fa-exclamation-circle"></i> Champs requis manquants
+        </div>
+        <div class="error-content">
+          Veuillez remplir tous les champs obligatoires pour continuer.
+          <ul>
+            <li *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">Prénom</li>
+            <li *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">Nom</li>
+            <li *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">Email</li>
+            <li *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">Mot de passe</li>
+            <li *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">Confirmation de mot de passe</li>
+            <li *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched">Adresse</li>
+            <li *ngIf="registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.touched">Date de naissance</li>
+            <li *ngIf="registerForm.get('roles')?.value.length === 0">Type de compte</li>
+            <li *ngIf="showRestaurantOwnerFields && registerForm.get('restaurantName')?.invalid && registerForm.get('restaurantName')?.touched">Nom du restaurant</li>
+            <li *ngIf="showRestaurantOwnerFields && registerForm.get('siretNumber')?.invalid && registerForm.get('siretNumber')?.touched">Numéro SIRET</li>
+            <li *ngIf="showRestaurantOwnerFields && registerForm.get('restaurantAddress')?.invalid && registerForm.get('restaurantAddress')?.touched">Adresse du restaurant</li>
+            <li *ngIf="showRestaurantOwnerFields && registerForm.get('restaurantPhone')?.invalid && registerForm.get('restaurantPhone')?.touched">Téléphone du restaurant</li>
+            <li *ngIf="showRestaurantOwnerFields && registerForm.get('deliveryFee')?.invalid && registerForm.get('deliveryFee')?.touched">Frais de livraison</li>
+            <li *ngIf="showDelivererFields && registerForm.get('delivererPhoneNumber')?.invalid && registerForm.get('delivererPhoneNumber')?.touched">Numéro de téléphone du livreur</li>
+            <li *ngIf="showDelivererFields && registerForm.get('delivererSiretNumber')?.invalid && registerForm.get('delivererSiretNumber')?.touched">Numéro SIRET du livreur</li>
+            <li *ngIf="showDelivererFields && registerForm.get('accountHolderName')?.invalid && registerForm.get('accountHolderName')?.touched">Nom du titulaire du compte</li>
+            <li *ngIf="showDelivererFields && registerForm.get('iban')?.invalid && registerForm.get('iban')?.touched">IBAN</li>
+          </ul>
+        </div>
+      </div>
+      
       <div class="terms-agreement">
         By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
       </div>
       
       <div class="form-actions">
-        <button type="submit" class="btn-register" [disabled]="registerForm.invalid || isLoading">
+        <button type="button" class="btn-register" [disabled]="isLoading" (click)="onButtonClick()">
           <span *ngIf="!isLoading">S'inscrire</span>
           <span *ngIf="isLoading">Inscription en cours...</span>
         </button>

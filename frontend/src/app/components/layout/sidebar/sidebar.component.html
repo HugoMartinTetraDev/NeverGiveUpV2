@@ -1,4 +1,6 @@
 <mat-nav-list>
+  <!-- Section Client -->
+  <ng-container *ngIf="hasCustomerRole">
     <a mat-list-item>Client</a>
     <a mat-list-item routerLink="/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -12,6 +14,10 @@
       <mat-icon matListItemIcon>receipt_long</mat-icon>
       <span matListItemTitle>Commandes</span>
     </a>
+  </ng-container>
+
+  <!-- Section Restaurateur -->
+  <ng-container *ngIf="hasRestaurantOwnerRole">
     <a mat-list-item>Restaurateur</a>
     <a mat-list-item routerLink="/restaurateur/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -29,6 +35,10 @@
       <mat-icon matListItemIcon>analytics</mat-icon>
       <span matListItemTitle>Statistiques</span>
     </a>
+  </ng-container>
+
+  <!-- Section Livreur -->
+  <ng-container *ngIf="hasDelivererRole">
     <a mat-list-item>Livreur</a>
     <a mat-list-item routerLink="/deliverer/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -38,7 +48,10 @@
       <mat-icon matListItemIcon>local_shipping</mat-icon>
       <span matListItemTitle>Gestion Livraisons</span>
     </a>
+  </ng-container>
 
+  <!-- Section Développeur -->
+  <ng-container *ngIf="hasDeveloperRole">
     <a mat-list-item>Développeur</a>
     <a mat-list-item routerLink="/developer/compte">
       <mat-icon matListItemIcon>account_circle</mat-icon>
@@ -48,7 +61,10 @@
       <mat-icon matListItemIcon>developer_mode</mat-icon>
       <span matListItemTitle>Composants</span>
     </a>
+  </ng-container>
 
+  <!-- Section Service Commercial -->
+  <ng-container *ngIf="hasCommercialRole">
     <a mat-list-item>Service Commercial</a>
     <a mat-list-item routerLink="/restaurateur/commercial-orders">
       <mat-icon matListItemIcon>point_of_sale</mat-icon>
@@ -58,7 +74,10 @@
       <mat-icon matListItemIcon>people</mat-icon>
       <span matListItemTitle>Gestion Clients</span>
     </a>
-    
+  </ng-container>
+  
+  <!-- Section Service Technique -->
+  <ng-container *ngIf="hasTechnicalRole">
     <a mat-list-item>Service Technique</a>
     <a mat-list-item routerLink="/tech">
       <mat-icon matListItemIcon>code</mat-icon>
@@ -68,8 +87,11 @@
       <mat-icon matListItemIcon>analytics</mat-icon>
       <span matListItemTitle>Logs</span>
     </a>
-    <a mat-list-item class="logout" (click)="logout()">
-      <mat-icon matListItemIcon>logout</mat-icon>
-      <span matListItemTitle>Déconnexion</span>
-    </a>
-  </mat-nav-list>
+  </ng-container>
+
+  <!-- Toujours afficher le bouton de déconnexion -->
+  <a mat-list-item class="logout" (click)="logout()">
+    <mat-icon matListItemIcon>logout</mat-icon>
+    <span matListItemTitle>Déconnexion</span>
+  </a>
+</mat-nav-list>

@@ -36,4 +36,9 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   iban?: string;
+
+  @ApiProperty({ example: 'newPassword123', required: false })
+  @IsString()
+  @IsOptional()
+  password?: string;
 } 
