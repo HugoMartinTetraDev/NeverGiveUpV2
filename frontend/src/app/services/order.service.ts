@@ -21,7 +21,7 @@ export class OrderService {
     // Mock order data
     private mockOrders: Order[] = [
         {
-            id: '2',
+            id: '5681246795215',
             date: new Date('2024-03-10'),
             items: [
                 {
@@ -61,7 +61,7 @@ export class OrderService {
             ]
         },
         {
-            id: '3',
+            id: '2346798526485',
             date: new Date('2024-03-05'),
             items: [
                 {
@@ -95,7 +95,7 @@ export class OrderService {
             ]
         },
         {
-            id: '4',
+            id: '9756123458265',
             date: new Date('2024-03-01'),
             items: [
                 {
