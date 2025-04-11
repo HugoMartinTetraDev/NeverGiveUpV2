@@ -15,12 +15,12 @@
     </mat-tab>
     
     <mat-tab label="À la carte">
-      <div class="items-grid">
-        <mat-card *ngFor="let item of restaurant.articles" class="item-card" (click)="openItemDetails(item)">
+      <div class="menu-grid">
+        <mat-card *ngFor="let item of restaurant.articles" class="menu-card" (click)="openItemDetails(item)">
           <img [src]="item.image" [alt]="item.name">
           <mat-card-content>
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
+            <h2>{{ item.name }}</h2>
+            <p class="description">{{ item.description }}</p>
             <p class="price">{{ item.price }}€</p>
           </mat-card-content>
         </mat-card>
