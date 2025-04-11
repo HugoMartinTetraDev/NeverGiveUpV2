@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
 import { Observable } from 'rxjs';
 
 declare var Stripe: any;
@@ -36,7 +37,8 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private cartService: CartService
+    private cartService: CartService,
+    private orderService: OrderService
   ) {
     this.paymentForm = this.fb.group({
       cardNumber: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
@@ -60,8 +62,8 @@ export class CheckoutComponent implements OnInit {
 
   onSubmit() {
     if (this.paymentForm.valid) {
-      // Here we would normally process the payment with Stripe
-      // For demo purposes, we'll just simulate a successful payment
+      // Save the total to the order service before navigation
+      this.orderService.setOrderTotal(this.total);
       this.router.navigate(['/order-confirmation']);
     }
   }

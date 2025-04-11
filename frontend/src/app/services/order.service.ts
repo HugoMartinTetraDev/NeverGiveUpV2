@@ -15,6 +15,9 @@ export class OrderService {
     public currentOrder$ = this.currentOrderSubject.asObservable();
     public isLoading$ = this.isLoadingSubject.asObservable();
 
+    private orderTotal = new BehaviorSubject<number>(0);
+    currentOrderTotal = this.orderTotal.asObservable();
+
     constructor(
         private cartService: CartService,
         private apiService: ApiService,
@@ -163,5 +166,13 @@ export class OrderService {
                 return throwError(() => error);
             })
         );
+    }
+
+    setOrderTotal(total: number) {
+        this.orderTotal.next(total);
+    }
+
+    getOrderTotal(): number {
+        return this.orderTotal.value;
     }
 } 
