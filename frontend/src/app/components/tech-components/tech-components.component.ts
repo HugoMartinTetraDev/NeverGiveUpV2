@@ -34,28 +34,28 @@ export class TechComponentsComponent {
       name: 'Composant Profil',
       description: 'Permet d\'afficher le profil d\'un utilisateur',
       image: 'assets/images/component-profil.png',
-      githubLink: 'https://github.com/TortueHardie/Advanced-Web-Project/tree/main'
+      githubLink: 'https://github.com/HugoMartinTetraDev/NeverGiveUpV2/tree/front-hugo-dav/frontend/src/app/components/profile'
     },
     {
       id: '2',
       name: 'Composant liste de restaurants',
       description: 'Permet d\'afficher une liste de restaurants',
       image: 'assets/images/component-liste-restaurants.png',
-      githubLink: 'https://github.com/TortueHardie/Advanced-Web-Project/tree/main'
+      githubLink: 'https://github.com/HugoMartinTetraDev/NeverGiveUpV2/tree/front-hugo-dav/frontend/src/app/components/customer-purchase'
     },
     {
       id: '3',
       name: 'Composant carte de restaurant',
       description: 'Permet d\'afficher une carte de restaurant avec les menus et les articles',
       image: 'assets/images/component-card.png',
-      githubLink: 'https://github.com/TortueHardie/Advanced-Web-Project/tree/main'
+      githubLink: 'https://github.com/HugoMartinTetraDev/NeverGiveUpV2/tree/front-hugo-dav/frontend/src/app/components/restaurant-card'
     },
     {
       id: '4',
       name: 'Composant panier',
       description: 'Affiche le panier d\'un utilisateur',
       image: 'assets/images/component-panier.png',
-      githubLink: 'https://github.com/TortueHardie/Advanced-Web-Project/tree/main'
+      githubLink: 'https://github.com/HugoMartinTetraDev/NeverGiveUpV2/tree/front-hugo-dav/frontend/src/app/components/cart'
     },
   ];
 
