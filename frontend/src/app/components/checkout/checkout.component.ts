@@ -8,6 +8,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CartService, CartItem } from '../../services/cart.service';
+import { Observable } from 'rxjs';
 
 declare var Stripe: any;
 
@@ -29,30 +31,12 @@ declare var Stripe: any;
 })
 export class CheckoutComponent implements OnInit {
   paymentForm: FormGroup;
-  cartItems = [
-    { 
-      name: 'Big Burger', 
-      quantity: 1, 
-      price: 8.00,
-      image: 'assets/images/burger.png'
-    },
-    { 
-      name: 'American Menu', 
-      quantity: 1, 
-      price: 12.00,
-      image: 'assets/images/menu.png'
-    },
-    { 
-      name: 'Frites', 
-      quantity: 1, 
-      price: 2.00,
-      image: 'assets/images/fries.png'
-    }
-  ];
+  cartItems$: Observable<CartItem[]>;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {
     this.paymentForm = this.fb.group({
       cardNumber: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
@@ -62,10 +46,11 @@ export class CheckoutComponent implements OnInit {
       country: ['FR', Validators.required],
       saveCard: [false]
     });
+    this.cartItems$ = this.cartService.getCartItems();
   }
 
   get total(): number {
-    return this.cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return this.cartService.getTotal();
   }
 
   ngOnInit() {

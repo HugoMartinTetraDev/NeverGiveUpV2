@@ -3,7 +3,7 @@
     
     <div class="order-summary">
       <h3>Récapitulatif de la commande</h3>
-      <div class="summary-item" *ngFor="let item of cartItems">
+      <div class="summary-item" *ngFor="let item of cartItems$ | async">
         <span>{{ item.name }} x {{ item.quantity }}</span>
         <span>{{ item.price * item.quantity }}€</span>
       </div>
@@ -45,10 +45,6 @@
             <mat-option value="DE">Allemagne</mat-option>
           </mat-select>
         </mat-form-field>
-
-        <mat-checkbox formControlName="saveCard">
-          Sauvegarder ma carte pour mes prochains achats
-        </mat-checkbox>
       </div>
 
       <div class="actions">
