@@ -33,7 +33,7 @@ export class ModifyOrderDialogComponent {
         if (this.data.order) {
             this.orderService.moveOrderToCart(this.data.order).subscribe(success => {
                 if (success) {
-                    this.router.navigate(['/cart']);
+                    this.router.navigate(['/customer-purchase']);
                 }
                 this.dialogRef.close(success);
             });
