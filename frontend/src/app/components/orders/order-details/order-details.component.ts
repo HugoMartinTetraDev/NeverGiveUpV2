@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ import { ActivatedRoute } from '@angular/router';
     styleUrls: ['./order-details.component.scss']
 })
 export class OrderDetailsComponent implements OnInit, OnDestroy {
-    currentOrder: Order | null = null;
+    @Input() order: Order | null = null;
     isLoading = false;
     private subscriptions: Subscription[] = [];
 
@@ -47,12 +47,14 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
             })
         );
 
-        // Souscrire aux changements de commande
-        this.subscriptions.push(
-            this.orderService.currentOrder$.subscribe((order: Order | null) => {
-                this.currentOrder = order;
-            })
-        );
+        // Si aucun ordre n'est fourni en input, essayer de récupérer depuis le service
+        if (!this.order) {
+            this.subscriptions.push(
+                this.orderService.currentOrder$.subscribe(order => {
+                    this.order = order;
+                })
+            );
+        }
 
         // Récupérer l'ID de la commande depuis l'URL si présent
         this.route.params.subscribe(params => {
@@ -68,18 +70,18 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
     }
 
     onModify() {
-        if (!this.currentOrder) return;
+        if (!this.order) return;
         
         const dialogRef = this.dialog.open(ModifyOrderDialogComponent, {
             width: '480px',
             disableClose: true,
             panelClass: 'order-dialog',
-            data: { order: this.currentOrder }
+            data: { order: this.order }
         });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.orderService.moveOrderToCart(this.currentOrder!).subscribe();
+                this.orderService.moveOrderToCart(this.order!).subscribe();
             }
         });
     }
@@ -92,8 +94,8 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         });
 
         dialogRef.afterClosed().subscribe((result: boolean) => {
-            if (result && this.currentOrder) {
-                this.orderService.deleteOrder(this.currentOrder.id).subscribe();
+            if (result && this.order) {
+                this.orderService.deleteOrder(this.order.id).subscribe();
             }
         });
     }

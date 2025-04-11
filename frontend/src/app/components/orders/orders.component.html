@@ -1,4 +1,6 @@
 <div class="orders-container">
-    <app-order-details></app-order-details>
+    <div *ngIf="currentOrder$ | async as order" class="current-order">
+        <app-order-details [order]="order"></app-order-details>
+    </div>
     <app-order-history></app-order-history>
 </div>

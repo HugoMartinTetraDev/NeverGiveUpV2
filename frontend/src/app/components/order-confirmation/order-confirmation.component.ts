@@ -30,6 +30,8 @@ export class OrderConfirmationComponent implements OnInit {
   }
 
   goToOrders() {
-    this.router.navigate(['/commandes']);
+    this.orderService.createMockOrder().subscribe(() => {
+      this.router.navigate(['/commandes']);
+    });
   }
 } 

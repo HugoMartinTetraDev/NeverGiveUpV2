@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } from 'rxjs';
-import { Order, OrderHistory } from '../models/order.model';
-import { CartService } from './cart.service';
+import { Order, OrderHistory, OrderItem } from '../models/order.model';
+import { CartService, CartItem } from './cart.service';
 import { ApiService } from './api.service';
 import { NotificationService } from './notification.service';
 import { finalize } from 'rxjs/operators';
@@ -17,6 +17,40 @@ export class OrderService {
 
     private orderTotal = new BehaviorSubject<number>(0);
     currentOrderTotal = this.orderTotal.asObservable();
+
+    // Mock order data
+    private mockOrders: Order[] = [
+        {
+            id: '1',
+            date: new Date(),
+            items: [
+                {
+                    name: 'Pizza Margherita',
+                    price: 12.99,
+                    quantity: 2,
+                    image: 'assets/images/pizza-margherita.jpg'
+                },
+                {
+                    name: 'Coca-Cola',
+                    price: 2.99,
+                    quantity: 1,
+                    image: 'assets/images/coca-cola.jpg'
+                }
+            ],
+            subtotal: 28.97,
+            fees: {
+                amount: 2.90,
+                percentage: 10
+            },
+            total: 31.87,
+            status: [
+                {
+                    status: 'En préparation',
+                    timestamp: new Date().toISOString()
+                }
+            ]
+        }
+    ];
 
     constructor(
         private cartService: CartService,
@@ -174,5 +208,57 @@ export class OrderService {
 
     getOrderTotal(): number {
         return this.orderTotal.value;
+    }
+
+    /**
+     * Creates a mock order from the current cart
+     */
+    createMockOrder(): Observable<Order> {
+        // Get cart items synchronously
+        let cartItems: CartItem[] = [];
+        this.cartService.getCartItems().subscribe(items => {
+            cartItems = items;
+        });
+
+        const subtotal = this.cartService.getTotal();
+        const fees = {
+            amount: subtotal * 0.1, // 10% fee
+            percentage: 10
+        };
+        const total = subtotal + fees.amount;
+
+        const mockOrder: Order = {
+            id: Date.now().toString(),
+            date: new Date(),
+            items: cartItems.map((item: CartItem) => ({
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                image: item.image || ''
+            })),
+            subtotal,
+            fees,
+            total,
+            status: [
+                {
+                    status: 'En préparation',
+                    timestamp: new Date().toISOString()
+                }
+            ]
+        };
+
+        this.mockOrders.push(mockOrder);
+        this.currentOrderSubject.next(mockOrder);
+        this.notificationService.success('Commande créée avec succès');
+        this.cartService.clearCart();
+        
+        return of(mockOrder);
+    }
+
+    /**
+     * Gets all mock orders
+     */
+    getMockOrders(): Observable<Order[]> {
+        return of(this.mockOrders);
     }
 } 
