@@ -28,20 +28,10 @@
         <div class="upload-container">
           <input type="file" #fileInput style="display: none" 
                  accept="image/*" (change)="onFileSelected($event)">
-          <button mat-raised-button color="primary" (click)="fileInput.click()"
-                  [disabled]="isImageLoading">
+          <button mat-raised-button color="primary" (click)="fileInput.click()">
             <mat-icon>upload</mat-icon>
             PARCOURIR LES FICHIERS
           </button>
-          
-          <div *ngIf="isImageLoading" class="loading-progress">
-            <mat-progress-bar mode="indeterminate" *ngIf="!uploadProgress"></mat-progress-bar>
-            <mat-progress-bar mode="determinate" [value]="uploadProgress && uploadProgress.progress || 0" *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'"></mat-progress-bar>
-            <span *ngIf="!uploadProgress">Traitement de l'image en cours...</span>
-            <span *ngIf="uploadProgress && uploadProgress.state === 'IN_PROGRESS'">
-              Upload en cours: {{ uploadProgress.progress }}%
-            </span>
-          </div>
           
           <div *ngIf="imageError" class="image-error">
             <mat-icon>error_outline</mat-icon>
@@ -87,14 +77,7 @@
         </div>
         
         <div class="article-list">
-          @if (isLoading) {
-            <div class="loading-container">
-              <mat-spinner diameter="40"></mat-spinner>
-              <p>Chargement des articles...</p>
-            </div>
-          } @else if (availableItems.length === 0) {
-            <p class="no-items">Aucun article disponible. Veuillez d'abord créer des articles.</p>
-          } @else if (filteredItems.length === 0) {
+          @if (filteredItems.length === 0) {
             <p class="no-items">Aucun article ne correspond à votre recherche.</p>
           } @else {
             @for (item of filteredItems; track item.id) {
@@ -141,7 +124,7 @@
     <div class="dialog-actions">
       <button mat-button (click)="onCancel()">ANNULER</button>
       <button mat-raised-button color="primary" 
-              (click)="onSave()" [disabled]="!menuForm.valid || isLoading || isImageLoading">
+              (click)="onSave()" [disabled]="!menuForm.valid">
         SAUVEGARDER
       </button>
     </div>
