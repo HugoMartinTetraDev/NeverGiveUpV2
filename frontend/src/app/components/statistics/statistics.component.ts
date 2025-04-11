@@ -6,7 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { Statistics, RevenueDataPoint } from '../../models/statistics.model';
 
-type Period = 'current' | 'last3' | 'last6' | 'year';
+type Period = 'current' | 'last3';
 
 @Component({
   selector: 'app-statistics',
@@ -29,23 +29,23 @@ export class StatisticsComponent implements OnInit {
   // Full dataset
   private fullStatistics: Statistics = {
     currentMonth: {
-      revenue: 12349.59,
-      orderCount: 835,
-      averageTicket: 23.56
+      revenue: 45678.90,
+      orderCount: 1523,
+      averageTicket: 30.00
     },
     revenueAnalysis: [
-      { month: 'Jan', revenue: 25000, orders: 350 },
-      { month: 'Feb', revenue: 42000, orders: 420 },
-      { month: 'Mar', revenue: 65000, orders: 550 },
-      { month: 'Apr', revenue: 52000, orders: 230 },
-      { month: 'May', revenue: 45000, orders: 250 },
-      { month: 'Jun', revenue: 48000, orders: 580 },
-      { month: 'Jul', revenue: 53000, orders: 640 },
-      { month: 'Aug', revenue: 40000, orders: 580 },
-      { month: 'Sep', revenue: 47000, orders: 520 },
-      { month: 'Oct', revenue: 45000, orders: 280 },
-      { month: 'Nov', revenue: 43000, orders: 260 },
-      { month: 'Dec', revenue: 25000, orders: 320 }
+      { month: 'Jan', revenue: 42000, orders: 1400 },  // Post-holiday season
+      { month: 'Feb', revenue: 45000, orders: 1500 },  // Valentine's Day boost
+      { month: 'Mar', revenue: 48000, orders: 1600 },  // Spring season
+      { month: 'Apr', revenue: 46000, orders: 1533 },  // Easter period
+      { month: 'May', revenue: 50000, orders: 1667 },  // Start of summer
+      { month: 'Jun', revenue: 52000, orders: 1733 },  // Summer season
+      { month: 'Jul', revenue: 54000, orders: 1800 },  // Peak summer
+      { month: 'Aug', revenue: 53000, orders: 1767 },  // Summer vacation
+      { month: 'Sep', revenue: 51000, orders: 1700 },  // Back to school
+      { month: 'Oct', revenue: 49000, orders: 1633 },  // Autumn season
+      { month: 'Nov', revenue: 55000, orders: 1833 },  // Pre-holiday season
+      { month: 'Dec', revenue: 60000, orders: 2000 }   // Holiday season
     ]
   };
 
@@ -88,10 +88,6 @@ export class StatisticsComponent implements OnInit {
         return 'Ce mois-ci';
       case 'last3':
         return '3 derniers mois';
-      case 'last6':
-        return '6 derniers mois';
-      case 'year':
-        return 'Cette année';
       default:
         return '';
     }
@@ -110,31 +106,24 @@ export class StatisticsComponent implements OnInit {
       case 'last3':
         filteredData = this.fullStatistics.revenueAnalysis.slice(Math.max(0, currentMonth - 2), currentMonth + 1);
         break;
-      case 'last6':
-        filteredData = this.fullStatistics.revenueAnalysis.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
-        break;
-      case 'year':
-        filteredData = this.fullStatistics.revenueAnalysis;
-        break;
       default:
-        filteredData = this.fullStatistics.revenueAnalysis;
+        filteredData = this.fullStatistics.revenueAnalysis.slice(currentMonth, currentMonth + 1);
     }
 
-    // Update statistics with filtered data
+    // Calculate total revenue and orders for the selected period
+    const totalRevenue = filteredData.reduce((sum, data) => sum + data.revenue, 0);
+    const totalOrders = filteredData.reduce((sum, data) => sum + data.orders, 0);
+    const averageTicket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+    // Update statistics with filtered data and calculated values
     this.statistics = {
-      ...this.fullStatistics,
+      currentMonth: {
+        revenue: totalRevenue,
+        orderCount: totalOrders,
+        averageTicket: averageTicket
+      },
       revenueAnalysis: filteredData
     };
-
-    // Calculate current month statistics based on filtered data
-    if (filteredData.length > 0) {
-      const lastMonth = filteredData[filteredData.length - 1];
-      this.statistics.currentMonth = {
-        revenue: lastMonth.revenue,
-        orderCount: lastMonth.orders,
-        averageTicket: lastMonth.revenue / lastMonth.orders
-      };
-    }
   }
 
   // Get data for the chart
