@@ -33,9 +33,9 @@ export class CommercialOrdersComponent implements OnInit {
   
   statistics: Statistics = {
     currentMonth: {
-      revenue: 12349.59,
-      orderCount: 835,
-      averageTicket: 0
+      revenue: 187.23,
+      orderCount: 5,
+      averageTicket: 297.62
     },
     revenueAnalysis: []
   };
@@ -48,52 +48,69 @@ export class CommercialOrdersComponent implements OnInit {
   }
 
   loadOrders(): void {
-    // Mock data matching the mockup
+    // Mock data with more realistic and varied orders
     this.orders = [
       {
         id: '1',
-        date: new Date('2025-03-19T15:05:13'),
-        items: [{ quantity: 1, name: 'Classic Burger Menu', price: 15.99, image: '' }],
-        subtotal: 15.99,
-        fees: { amount: 2.99, percentage: 10 },
-        total: 18.98,
+        date: new Date('2024-04-09T15:05:13'),
+        items: [
+          { quantity: 2, name: 'Classic Burger Menu', price: 15.99, image: '' },
+          { quantity: 1, name: 'Frites', price: 3.99, image: '' },
+          { quantity: 2, name: 'Coca-Cola', price: 2.99, image: '' }
+        ],
+        subtotal: 45.94,
+        fees: { amount: 4.59, percentage: 10 },
+        total: 50.53,
         status: [{ timestamp: new Date().toISOString(), status: 'Livraison en cours' }]
       },
       {
         id: '2',
-        date: new Date('2025-03-19T15:05:13'),
-        items: [{ quantity: 1, name: 'Frites', price: 3.99, image: '' }],
-        subtotal: 3.99,
-        fees: { amount: 2.99, percentage: 10 },
-        total: 6.98,
-        status: [{ timestamp: new Date().toISOString(), status: 'Livraison en cours' }]
+        date: new Date('2024-04-09T14:30:00'),
+        items: [
+          { quantity: 1, name: 'Double Cheese Burger', price: 18.99, image: '' },
+          { quantity: 1, name: 'Onion Rings', price: 4.99, image: '' }
+        ],
+        subtotal: 23.98,
+        fees: { amount: 2.40, percentage: 10 },
+        total: 26.38,
+        status: [{ timestamp: new Date().toISOString(), status: 'En attente de réception' }]
       },
       {
         id: '3',
-        date: new Date('2025-03-19T15:05:13'),
-        items: [{ quantity: 1, name: 'Classic Burger', price: 12.99, image: '' }],
-        subtotal: 12.99,
-        fees: { amount: 2.99, percentage: 10 },
-        total: 15.98,
-        status: [{ timestamp: new Date().toISOString(), status: 'En attente de réception' }]
+        date: new Date('2024-04-09T14:15:00'),
+        items: [
+          { quantity: 1, name: 'Veggie Burger', price: 16.99, image: '' },
+          { quantity: 1, name: 'Salade César', price: 8.99, image: '' }
+        ],
+        subtotal: 25.98,
+        fees: { amount: 2.60, percentage: 10 },
+        total: 28.58,
+        status: [{ timestamp: new Date().toISOString(), status: 'Préparation en cours' }]
       },
       {
         id: '4',
-        date: new Date('2025-03-19T15:05:13'),
-        items: [{ quantity: 1, name: 'Classic Burger Menu', price: 15.99, image: '' }],
-        subtotal: 15.99,
-        fees: { amount: 2.99, percentage: 10 },
-        total: 18.98,
-        status: [{ timestamp: new Date().toISOString(), status: 'En attente de réception' }]
+        date: new Date('2024-04-09T13:45:00'),
+        items: [
+          { quantity: 3, name: 'Classic Burger Menu', price: 15.99, image: '' },
+          { quantity: 2, name: 'Frites', price: 3.99, image: '' }
+        ],
+        subtotal: 55.95,
+        fees: { amount: 5.60, percentage: 10 },
+        total: 61.55,
+        status: [{ timestamp: new Date().toISOString(), status: 'Livraison en cours' }]
       },
       {
         id: '5',
-        date: new Date('2025-03-19T15:05:13'),
-        items: [{ quantity: 1, name: 'Frites', price: 3.99, image: '' }],
-        subtotal: 3.99,
-        fees: { amount: 2.99, percentage: 10 },
-        total: 6.98,
-        status: [{ timestamp: new Date().toISOString(), status: 'Préparation en cours' }]
+        date: new Date('2024-04-09T13:30:00'),
+        items: [
+          { quantity: 1, name: 'Chicken Burger', price: 17.99, image: '' },
+          { quantity: 1, name: 'Frites', price: 3.99, image: '' },
+          { quantity: 1, name: 'Milkshake Vanille', price: 5.99, image: '' }
+        ],
+        subtotal: 27.97,
+        fees: { amount: 2.80, percentage: 10 },
+        total: 30.77,
+        status: [{ timestamp: new Date().toISOString(), status: 'En attente de réception' }]
       }
     ];
   }
