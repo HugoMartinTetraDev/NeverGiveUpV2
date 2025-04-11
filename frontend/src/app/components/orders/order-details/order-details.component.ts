@@ -69,6 +69,14 @@ export class OrderDetailsComponent implements OnInit, OnDestroy {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
+    canModifyOrder(): boolean {
+        if (!this.order || !this.order.status || this.order.status.length === 0) {
+            return false;
+        }
+        const lastStatus = this.order.status[this.order.status.length - 1].status;
+        return lastStatus !== 'Livré' && lastStatus !== 'Annulé';
+    }
+
     onModify() {
         if (!this.order) return;
         

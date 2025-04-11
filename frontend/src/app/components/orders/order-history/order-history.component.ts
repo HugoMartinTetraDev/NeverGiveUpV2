@@ -33,4 +33,8 @@ export class OrderHistoryComponent implements OnInit {
             this.orderHistory = history;
         });
     }
+
+    onDetails(orderId: number) {
+        this.orderService.getOrderById(orderId.toString()).subscribe();
+    }
 } 

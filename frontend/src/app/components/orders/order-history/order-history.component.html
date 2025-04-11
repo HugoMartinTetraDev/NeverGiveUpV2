@@ -24,7 +24,7 @@
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let order">
-                <a mat-raised-button color="primary" [routerLink]="['/commandes', order.id]">DÉTAILS</a>
+                <a mat-raised-button color="primary" (click)="onDetails(order.id)">DÉTAILS</a>
             </td>
         </ng-container>
 

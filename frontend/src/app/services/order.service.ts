@@ -21,32 +21,118 @@ export class OrderService {
     // Mock order data
     private mockOrders: Order[] = [
         {
-            id: '1',
-            date: new Date(),
+            id: '2',
+            date: new Date('2024-03-10'),
             items: [
                 {
-                    name: 'Pizza Margherita',
-                    price: 12.99,
-                    quantity: 2,
-                    image: 'assets/images/pizza-margherita.jpg'
+                    name: 'Burger Classique',
+                    price: 9.99,
+                    quantity: 1,
+                    image: 'assets/images/burger-classique.jpg'
                 },
                 {
-                    name: 'Coca-Cola',
+                    name: 'Frites',
+                    price: 3.99,
+                    quantity: 1,
+                    image: 'assets/images/frites.jpg'
+                },
+                {
+                    name: 'Sprite',
                     price: 2.99,
                     quantity: 1,
-                    image: 'assets/images/coca-cola.jpg'
+                    image: 'assets/images/sprite.jpg'
                 }
             ],
-            subtotal: 28.97,
+            subtotal: 16.97,
             fees: {
-                amount: 2.90,
+                amount: 1.70,
                 percentage: 10
             },
-            total: 31.87,
+            total: 18.67,
             status: [
                 {
+                    status: 'Payé par carte',
+                    timestamp: new Date('2024-03-10T18:45:00').toISOString()
+                },
+                {
+                    status: 'Livré',
+                    timestamp: new Date('2024-03-10T19:30:00').toISOString()
+                }
+            ]
+        },
+        {
+            id: '3',
+            date: new Date('2024-03-05'),
+            items: [
+                {
+                    name: 'Salade César',
+                    price: 8.99,
+                    quantity: 1,
+                    image: 'assets/images/salade-cesar.jpg'
+                },
+                {
+                    name: 'Eau Minérale',
+                    price: 1.99,
+                    quantity: 1,
+                    image: 'assets/images/eau-minerale.jpg'
+                }
+            ],
+            subtotal: 10.98,
+            fees: {
+                amount: 1.10,
+                percentage: 10
+            },
+            total: 12.08,
+            status: [
+                {
+                    status: 'Payé par PayPal',
+                    timestamp: new Date('2024-03-05T12:15:00').toISOString()
+                },
+                {
+                    status: 'Annulé',
+                    timestamp: new Date('2024-03-05T12:30:00').toISOString()
+                }
+            ]
+        },
+        {
+            id: '4',
+            date: new Date('2024-03-01'),
+            items: [
+                {
+                    name: 'Sushi Mix',
+                    price: 15.99,
+                    quantity: 1,
+                    image: 'assets/images/sushi-mix.jpg'
+                },
+                {
+                    name: 'Thé Vert',
+                    price: 2.99,
+                    quantity: 2,
+                    image: 'assets/images/the-vert.jpg'
+                }
+            ],
+            subtotal: 21.97,
+            fees: {
+                amount: 2.20,
+                percentage: 10
+            },
+            total: 24.17,
+            status: [
+                {
+                    status: 'Payé par carte',
+                    timestamp: new Date('2024-03-01T19:00:00').toISOString()
+                },
+                {
                     status: 'En préparation',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date('2024-03-01T19:05:00').toISOString()
+                },
+                {
+                    status: 'Prêt',
+                    timestamp: new Date('2024-03-01T19:30:00').toISOString()
+                },
+                {
+                    status: 'Livré',
+                    timestamp: new Date('2024-03-01T20:00:00').toISOString()
                 }
             ]
         }
@@ -84,14 +170,17 @@ export class OrderService {
      */
     getOrderById(orderId: string): Observable<Order> {
         this.isLoadingSubject.next(true);
-        return this.apiService.get<Order>(`orders/${orderId}`).pipe(
-            tap(order => this.currentOrderSubject.next(order)),
-            finalize(() => this.isLoadingSubject.next(false)),
-            catchError(error => {
-                this.notificationService.error('Erreur lors de la récupération de la commande');
-                return throwError(() => error);
-            })
-        );
+        const order = this.mockOrders.find(o => o.id === orderId);
+        
+        if (!order) {
+            this.isLoadingSubject.next(false);
+            this.notificationService.error('Commande non trouvée');
+            return throwError(() => new Error('Commande non trouvée'));
+        }
+
+        this.currentOrderSubject.next(order);
+        this.isLoadingSubject.next(false);
+        return of(order);
     }
 
     /**
@@ -137,21 +226,20 @@ export class OrderService {
      */
     getOrderHistory(): Observable<OrderHistory[]> {
         this.isLoadingSubject.next(true);
-        return this.apiService.get<Order[]>('orders').pipe(
-            map(orders => orders.map(order => {
-                // Extraction du type de paiement depuis les détails de statut si disponible
-                const paymentInfo = order.status.find(s => s.status.includes('Payé'));
-                const paymentType = paymentInfo ? 
-                    paymentInfo.status.replace('Payé par ', '') : 
-                    'Non spécifié';
-                
-                return {
-                    id: +order.id, // Convertir en nombre
-                    dateTime: new Date(order.date),
-                    amount: order.total,
-                    paymentType
-                } as OrderHistory;
-            })),
+        return of(this.mockOrders.map(order => {
+            // Extraction du type de paiement depuis les détails de statut si disponible
+            const paymentInfo = order.status.find(s => s.status.includes('Payé'));
+            const paymentType = paymentInfo ? 
+                paymentInfo.status.replace('Payé par ', '') : 
+                'Non spécifié';
+            
+            return {
+                id: +order.id, // Convertir en nombre
+                dateTime: new Date(order.date),
+                amount: order.total,
+                paymentType
+            } as OrderHistory;
+        })).pipe(
             finalize(() => this.isLoadingSubject.next(false)),
             catchError(error => {
                 this.notificationService.error('Erreur lors de la récupération de l\'historique');
