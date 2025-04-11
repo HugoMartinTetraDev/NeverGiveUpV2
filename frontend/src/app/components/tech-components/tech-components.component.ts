@@ -69,7 +69,6 @@ export class TechComponentsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Generate a new ID (you might want to implement a more robust ID generation)
         const newComponent: ComponentItem = {
           ...result,
           id: (this.composants.length + 1).toString()
@@ -77,5 +76,19 @@ export class TechComponentsComponent {
         this.composants.push(newComponent);
       }
     });
+  }
+
+  onEdit(updatedComponent: ComponentItem): void {
+    const index = this.composants.findIndex(c => c.id === updatedComponent.id);
+    if (index !== -1) {
+      this.composants[index] = updatedComponent;
+    }
+  }
+
+  onDelete(componentToDelete: ComponentItem): void {
+    const index = this.composants.findIndex(c => c.id === componentToDelete.id);
+    if (index !== -1) {
+      this.composants.splice(index, 1);
+    }
   }
 }

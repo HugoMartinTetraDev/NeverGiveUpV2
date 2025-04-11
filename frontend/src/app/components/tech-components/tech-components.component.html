@@ -7,12 +7,12 @@
     </button>
   </div>
   <div class="component-grid">
-
     <app-tech-component-card
       *ngFor="let component of composants"
       [component]="component"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)"
     ></app-tech-component-card>
-
   </div>
   <div class="no-results" *ngIf="composants.length === 0">
     <mat-icon class="no-results-icon">search_off</mat-icon>
