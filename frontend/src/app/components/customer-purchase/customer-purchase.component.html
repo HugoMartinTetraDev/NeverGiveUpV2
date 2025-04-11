@@ -1,11 +1,15 @@
 <div class="container">
   <h1>Restaurants</h1>
-  <div class="restaurant-grid" *ngIf="(filteredRestaurants$ | async)?.length">
-    <app-restaurant-card
-      *ngFor="let restaurant of filteredRestaurants$ | async"
-      [restaurant]="restaurant"
-      (detailsClick)="showRestaurantDetails(restaurant.id)"
-    ></app-restaurant-card>
+  <div class="restaurant-list">
+    <ng-container *ngIf="filteredRestaurants$ | async as restaurants">
+      <div class="restaurant-grid">
+        <app-restaurant-card
+          *ngFor="let restaurant of restaurants"
+          [restaurant]="restaurant"
+          (detailsClick)="onRestaurantSelected($event)">
+        </app-restaurant-card>
+      </div>
+    </ng-container>
   </div>
   <div class="no-results" *ngIf="!(filteredRestaurants$ | async)?.length">
     <mat-icon class="no-results-icon">search_off</mat-icon>

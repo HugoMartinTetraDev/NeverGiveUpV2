@@ -5,6 +5,7 @@ import { SearchService } from '../../services/search.service';
 import { Observable, map, of, combineLatest } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { Restaurant } from '../../models/restaurant.model';
 
 interface Menu {
   id: string;
@@ -29,18 +30,6 @@ interface MenuItem {
   }[];
 }
 
-interface Restaurant {
-  id: string;
-  name: string;
-  location: string;
-  description: string;
-  image: string;
-  deliveryFee?: number;
-  freeDelivery?: boolean;
-  menus: Menu[];
-  articles: MenuItem[];
-}
-
 @Component({
   selector: 'app-customer-purchase',
   standalone: true,
@@ -61,6 +50,7 @@ export class CustomerPurchaseComponent implements OnInit {
       description: 'Miam !',
       image: 'assets/images/restaurant1.png',
       deliveryFee: 2.00,
+      freeDelivery: false,
       menus: [
         {
           id: '1',
@@ -375,7 +365,7 @@ export class CustomerPurchaseComponent implements OnInit {
     );
   }
 
-  showRestaurantDetails(restaurantId: string): void {
+  onRestaurantSelected(restaurantId: string): void {
     this.router.navigate(['/restaurant', restaurantId]);
   }
 }

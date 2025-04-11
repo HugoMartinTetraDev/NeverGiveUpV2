@@ -4,9 +4,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { Restaurant, Menu, MenuItem } from '../../models/restaurant.model';
 import { CartService } from '../../services/cart.service';
 import { MenuItemDetailComponent } from '../menu-item-detail/menu-item-detail.component';
+import { RestaurantService } from '../../services/restaurant.service';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-restaurant-detail',
@@ -22,74 +25,46 @@ import { MenuItemDetailComponent } from '../menu-item-detail/menu-item-detail.co
   styleUrls: ['./restaurant-detail.component.scss']
 })
 export class RestaurantDetailComponent implements OnInit {
-  restaurant: Restaurant = {
-    id: '1',
-    name: 'Pop-Eat',
-    menus: [
-      {
-        id: '1',
-        name: 'Royal Menu',
-        price: 13.00,
-        description: 'Royal Burger + Frites + Boisson',
-        image: 'assets/images/royal-menu.png',
-        items: []
-      },
-      {
-        id: '2',
-        name: 'American Menu',
-        price: 12.00,
-        description: 'American Burger + Frites + Boisson',
-        image: 'assets/images/american-menu.png',
-        items: []
-      },
-      {
-        id: '3',
-        name: 'QuiPique Menu',
-        price: 13.50,
-        description: 'QuiPiqueBurger + Frites + Boisson',
-        image: 'assets/images/quipique-menu.png',
-        items: []
-      }
-    ],
-    articles: [
-      {
-        id: '1',
-        name: 'Big Burger',
-        price: 8.00,
-        description: '200g de viande, salade, tomate, bacon...',
-        image: 'assets/images/big-burger.png'
-      },
-      {
-        id: '2',
-        name: 'Tacos poulet',
-        price: 7.50,
-        description: 'Poulet, frites, poivron, sauce blanche...',
-        image: 'assets/images/tacos-poulet.png'
-      },
-      {
-        id: '3',
-        name: 'Frites',
-        price: 2.00,
-        description: 'Sauce au choix',
-        image: 'assets/images/fries.png',
-        options: [
-          {
-            name: 'Sauce',
-            choices: ['Blanche', 'Ketchup', 'Algérienne', 'Samouraï'],
-            multiSelect: false,
-            defaultChoice: 'Blanche'
-          }
-        ]
-      }
-    ]
-  };
+  restaurant: Restaurant | null = null;
+  isLoading = true;
+  error = '';
 
   constructor(
+    private route: ActivatedRoute,
     private dialog: MatDialog,
-    private cartService: CartService
+    private cartService: CartService,
+    private restaurantService: RestaurantService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const restaurantId = params['id'];
+      if (restaurantId) {
+        this.loadRestaurantDetails(restaurantId);
+      }
+    });
+  }
+
+  loadRestaurantDetails(restaurantId: string): void {
+    this.isLoading = true;
+    this.error = '';
+    
+    this.restaurantService.getRestaurantById(restaurantId)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe({
+        next: (restaurant: Restaurant) => {
+          this.restaurant = restaurant;
+        },
+        error: (error: Error) => {
+          this.error = 'Erreur lors du chargement des détails du restaurant';
+          console.error('Error loading restaurant details:', error);
+        }
+      });
+  }
 
   openMenuDetails(menu: Menu): void {
     // Convert menu to MenuItem format for the dialog
@@ -124,7 +99,7 @@ export class RestaurantDetailComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         const cartItem = {
-          id: `${this.restaurant.id}-${item.id}`,
+          id: `${this.restaurant?.id}-${item.id}`,
           name: item.name,
           price: item.price,
           image: item.image,

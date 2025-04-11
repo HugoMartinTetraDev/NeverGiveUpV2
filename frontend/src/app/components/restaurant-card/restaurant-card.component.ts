@@ -2,15 +2,29 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { Restaurant } from '../../models/restaurant.model';
 
-interface Restaurant {
+interface Menu {
   id: string;
   name: string;
-  location: string;
+  price: number;
   description: string;
   image: string;
-  deliveryFee?: number;
-  freeDelivery?: boolean;
+  items: any[];
+}
+
+interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  image: string;
+  options?: {
+    name: string;
+    choices: string[];
+    multiSelect: boolean;
+    defaultChoice: string;
+  }[];
 }
 
 @Component({
@@ -22,9 +36,9 @@ interface Restaurant {
 })
 export class RestaurantCardComponent {
   @Input() restaurant!: Restaurant;
-  @Output() detailsClick = new EventEmitter<void>();
+  @Output() detailsClick = new EventEmitter<string>();
 
   onDetailsClick(): void {
-    this.detailsClick.emit();
+    this.detailsClick.emit(this.restaurant.id);
   }
 }

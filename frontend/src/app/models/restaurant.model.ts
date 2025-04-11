@@ -1,8 +1,11 @@
 export interface Restaurant {
     id: string;
     name: string;
-    description?: string;
-    image?: string;
+    location: string;
+    description: string;
+    image: string;
+    deliveryFee?: number;
+    freeDelivery?: boolean;
     menus: Menu[];
     articles: MenuItem[];
 }
@@ -10,19 +13,24 @@ export interface Restaurant {
 export interface Menu {
     id: string;
     name: string;
-    description?: string;
     price: number;
-    image?: string;
-    items: MenuItem[];
+    description: string;
+    image: string;
+    items: any[];
 }
 
 export interface MenuItem {
     id: string;
     name: string;
-    description?: string;
     price: number;
-    image?: string;
-    options?: MenuItemOption[];
+    description: string;
+    image: string;
+    options?: {
+        name: string;
+        choices: string[];
+        multiSelect: boolean;
+        defaultChoice: string;
+    }[];
 }
 
 export interface MenuItemOption {

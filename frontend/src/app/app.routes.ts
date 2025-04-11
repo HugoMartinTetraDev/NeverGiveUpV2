@@ -46,6 +46,12 @@ export const routes: Routes = [
     data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
   },
   { 
+    path: 'restaurant/:id', 
+    component: RestaurantDetailComponent,
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.CLIENT, UserRole.ADMIN] }
+  },
+  { 
     path: 'compte', 
     component: ProfileComponent,
     canActivate: [RoleGuard],

@@ -33,6 +33,9 @@ export class RestaurateurMenuManagementComponent implements OnInit {
   restaurant: Restaurant = {
     id: '',
     name: '',
+    location: '',
+    description: '',
+    image: '',
     menus: [],
     articles: []
   };
@@ -62,22 +65,20 @@ export class RestaurateurMenuManagementComponent implements OnInit {
     this.error = '';
     
     this.restaurantService.getMyRestaurant()
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
       .subscribe({
         next: (restaurant: Restaurant) => {
           this.restaurant = restaurant;
-          // S'assurer que les tableaux existent
-          if (!this.restaurant.menus) this.restaurant.menus = [];
-          if (!this.restaurant.articles) this.restaurant.articles = [];
-          
-          // Initialiser la pagination
           this.updatePaginatedMenus();
           this.updatePaginatedArticles();
         },
-        error: (error) => {
-          this.error = 'Impossible de charger les informations du restaurant. Veuillez réessayer plus tard.';
-          this.notificationService.error('Erreur lors de la récupération des informations du restaurant');
-          console.error('Erreur lors du chargement du restaurant:', error);
+        error: (error: Error) => {
+          this.error = 'Erreur lors du chargement des détails du restaurant';
+          this.notificationService.error(this.error);
         }
       });
   }

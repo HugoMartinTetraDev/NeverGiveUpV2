@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Restaurant, Menu, MenuItem } from '../models/restaurant.model';
-import { ApiService } from './api.service';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -11,8 +10,94 @@ export class RestaurantService {
   private restaurantSubject = new BehaviorSubject<Restaurant | null>(null);
   public restaurant$ = this.restaurantSubject.asObservable();
 
+  private mockRestaurants: Restaurant[] = [
+    {
+      id: '1',
+      name: 'Pizza Palace',
+      location: 'Paris',
+      description: 'Authentic Italian pizzas made with fresh ingredients',
+      image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+      deliveryFee: 2.99,
+      freeDelivery: false,
+      menus: [
+        {
+          id: '1',
+          name: 'Margherita Pizza',
+          description: 'Classic tomato sauce, mozzarella, and basil',
+          price: 12.99,
+          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+          items: [
+            {
+              id: '1',
+              name: 'Margherita Pizza',
+              description: 'Classic tomato sauce, mozzarella, and basil',
+              price: 12.99,
+              image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+              options: []
+            }
+          ]
+        },
+        {
+          id: '2',
+          name: 'Pepperoni Pizza',
+          description: 'Tomato sauce, mozzarella, and pepperoni',
+          price: 14.99,
+          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+          items: [
+            {
+              id: '2',
+              name: 'Pepperoni Pizza',
+              description: 'Tomato sauce, mozzarella, and pepperoni',
+              price: 14.99,
+              image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+              options: []
+            }
+          ]
+        }
+      ],
+      articles: [
+        {
+          id: '1',
+          name: 'Garlic Bread',
+          description: 'Freshly baked bread with garlic butter',
+          price: 4.99,
+          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+          options: []
+        }
+      ]
+    },
+    {
+      id: '2',
+      name: 'Sushi Master',
+      location: 'Tokyo',
+      description: 'Fresh and authentic Japanese sushi',
+      image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+      deliveryFee: 3.99,
+      freeDelivery: true,
+      menus: [
+        {
+          id: '3',
+          name: 'Sushi Combo',
+          description: 'Assorted sushi pieces with miso soup',
+          price: 24.99,
+          image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+          items: [
+            {
+              id: '3',
+              name: 'Sushi Combo',
+              description: 'Assorted sushi pieces with miso soup',
+              price: 24.99,
+              image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+              options: []
+            }
+          ]
+        }
+      ],
+      articles: []
+    }
+  ];
+
   constructor(
-    private apiService: ApiService,
     private notificationService: NotificationService
   ) {}
 
@@ -20,96 +105,64 @@ export class RestaurantService {
    * Récupère la liste de tous les restaurants
    */
   getRestaurants(): Observable<Restaurant[]> {
-    return this.apiService.get<Restaurant[]>('restaurants');
+    return of(this.mockRestaurants);
   }
 
   /**
    * Récupère les détails d'un restaurant par son ID
    */
   getRestaurantById(id: string): Observable<Restaurant> {
-    return this.apiService.get<Restaurant>(`restaurants/${id}`).pipe(
-      tap(restaurant => this.restaurantSubject.next(restaurant)),
-      catchError(error => {
-        this.notificationService.error(`Erreur lors de la récupération du restaurant: ${error.message}`);
-        return throwError(() => error);
-      })
-    );
+    const restaurant = this.mockRestaurants.find(r => r.id === id);
+    if (restaurant) {
+      this.restaurantSubject.next(restaurant);
+      return of(restaurant);
+    } else {
+      const error = new Error(`Restaurant with ID "${id}" not found`);
+      this.notificationService.error(`Erreur lors de la récupération du restaurant: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
    * Récupère le restaurant du restaurateur connecté
    */
   getMyRestaurant(): Observable<Restaurant> {
-    return this.apiService.get<Restaurant>('restaurants/my-restaurant').pipe(
-      tap(restaurant => {
-        this.restaurantSubject.next(restaurant);
-        return restaurant;
-      }),
-      catchError(error => {
-        this.notificationService.error(`Erreur lors de la récupération de votre restaurant: ${error.message}`);
-        return throwError(() => error);
-      })
-    );
+    // For demo purposes, return the first restaurant
+    const restaurant = this.mockRestaurants[0];
+    this.restaurantSubject.next(restaurant);
+    return of(restaurant);
   }
 
   /**
    * Crée un nouveau restaurant
    */
   createRestaurant(restaurant: Restaurant): Observable<Restaurant> {
-    return this.apiService.post<Restaurant>('restaurants', restaurant).pipe(
-      tap(newRestaurant => {
-        this.notificationService.success('Restaurant créé avec succès');
-        return newRestaurant;
-      }),
-      catchError(error => {
-        this.notificationService.error(`Erreur lors de la création du restaurant: ${error.message}`);
-        return throwError(() => error);
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Met à jour un restaurant existant
    */
   updateRestaurant(id: string, restaurant: Partial<Restaurant>): Observable<Restaurant> {
-    return this.apiService.put<Restaurant>(`restaurants/${id}`, restaurant).pipe(
-      tap(updatedRestaurant => {
-        if (this.restaurantSubject.value?.id === id) {
-          this.restaurantSubject.next(updatedRestaurant);
-        }
-        this.notificationService.success('Restaurant mis à jour avec succès');
-        return updatedRestaurant;
-      }),
-      catchError(error => {
-        this.notificationService.error(`Erreur lors de la mise à jour du restaurant: ${error.message}`);
-        return throwError(() => error);
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Supprime un restaurant
    */
   deleteRestaurant(id: string): Observable<void> {
-    return this.apiService.delete<void>(`restaurants/${id}`).pipe(
-      tap(() => {
-        if (this.restaurantSubject.value?.id === id) {
-          this.restaurantSubject.next(null);
-        }
-        this.notificationService.success('Restaurant supprimé avec succès');
-      }),
-      catchError(error => {
-        this.notificationService.error(`Erreur lors de la suppression du restaurant: ${error.message}`);
-        return throwError(() => error);
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Récupère les statistiques d'un restaurant
    */
   getRestaurantStatistics(id: string): Observable<any> {
-    return this.apiService.get<any>(`restaurants/${id}/statistics`);
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   // Méthodes pour les menus
@@ -117,69 +170,32 @@ export class RestaurantService {
    * Récupère les menus d'un restaurant
    */
   getMenus(restaurantId: string): Observable<Menu[]> {
-    return this.apiService.get<Menu[]>(`restaurants/${restaurantId}/menu`);
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Crée un nouveau menu
    */
   createMenu(restaurantId: string, menu: Menu): Observable<Menu> {
-    return this.apiService.post<Menu>(`restaurants/${restaurantId}/menu`, menu).pipe(
-      tap(newMenu => {
-        this.notificationService.success('Menu créé avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            menus: [...currentRestaurant.menus, newMenu]
-          });
-        }
-        return newMenu;
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Met à jour un menu
    */
   updateMenu(restaurantId: string, menu: Menu): Observable<Menu> {
-    return this.apiService.put<Menu>(`restaurants/${restaurantId}/menu/${menu.id}`, menu).pipe(
-      tap(updatedMenu => {
-        this.notificationService.success('Menu mis à jour avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          const updatedMenus = currentRestaurant.menus.map(m => 
-            m.id === menu.id ? updatedMenu : m
-          );
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            menus: updatedMenus
-          });
-        }
-        return updatedMenu;
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Supprime un menu
    */
   deleteMenu(restaurantId: string, menuId: string): Observable<void> {
-    return this.apiService.delete<void>(`restaurants/${restaurantId}/menu/${menuId}`).pipe(
-      tap(() => {
-        this.notificationService.success('Menu supprimé avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            menus: currentRestaurant.menus.filter(m => m.id !== menuId)
-          });
-        }
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   // Méthodes pour les articles
@@ -187,68 +203,31 @@ export class RestaurantService {
    * Récupère les articles d'un restaurant
    */
   getArticles(restaurantId: string): Observable<MenuItem[]> {
-    return this.apiService.get<MenuItem[]>(`restaurants/${restaurantId}/articles`);
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Crée un nouvel article
    */
   createArticle(restaurantId: string, article: MenuItem): Observable<MenuItem> {
-    return this.apiService.post<MenuItem>(`restaurants/${restaurantId}/articles`, article).pipe(
-      tap(newArticle => {
-        this.notificationService.success('Article créé avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            articles: [...currentRestaurant.articles, newArticle]
-          });
-        }
-        return newArticle;
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Met à jour un article
    */
   updateArticle(restaurantId: string, article: MenuItem): Observable<MenuItem> {
-    return this.apiService.put<MenuItem>(`restaurants/${restaurantId}/articles/${article.id}`, article).pipe(
-      tap(updatedArticle => {
-        this.notificationService.success('Article mis à jour avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          const updatedArticles = currentRestaurant.articles.map(a => 
-            a.id === article.id ? updatedArticle : a
-          );
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            articles: updatedArticles
-          });
-        }
-        return updatedArticle;
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 
   /**
    * Supprime un article
    */
   deleteArticle(restaurantId: string, articleId: string): Observable<void> {
-    return this.apiService.delete<void>(`restaurants/${restaurantId}/articles/${articleId}`).pipe(
-      tap(() => {
-        this.notificationService.success('Article supprimé avec succès');
-        // Mettre à jour le restaurant en mémoire si c'est celui actuellement consulté
-        if (this.restaurantSubject.value?.id === restaurantId) {
-          const currentRestaurant = this.restaurantSubject.value;
-          this.restaurantSubject.next({
-            ...currentRestaurant,
-            articles: currentRestaurant.articles.filter(a => a.id !== articleId)
-          });
-        }
-      })
-    );
+    // Implementation needed
+    throw new Error('Method not implemented');
   }
 } 
