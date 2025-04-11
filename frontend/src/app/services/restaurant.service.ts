@@ -13,43 +13,42 @@ export class RestaurantService {
   private mockRestaurants: Restaurant[] = [
     {
       id: '1',
-      name: 'Pizza Palace',
+      name: 'Burger King',
       location: 'Paris',
-      description: 'Authentic Italian pizzas made with fresh ingredients',
-      image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+      description: 'Les meilleurs burgers de la ville, préparés avec des ingrédients frais',
+      image: 'assets/images/restaurant1.png',
       deliveryFee: 2.99,
       freeDelivery: false,
       menus: [
         {
           id: '1',
-          name: 'Margherita Pizza',
-          description: 'Classic tomato sauce, mozzarella, and basil',
+          name: 'Menu American',
+          description: 'Un délicieux burger accompagné de frites et d\'une boisson',
           price: 12.99,
-          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+          image: 'assets/images/american-menu.png',
           items: [
             {
               id: '1',
-              name: 'Margherita Pizza',
-              description: 'Classic tomato sauce, mozzarella, and basil',
-              price: 12.99,
-              image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+              name: 'Big Burger',
+              description: 'Burger double avec fromage, bacon et sauce spéciale',
+              price: 8.99,
+              image: 'assets/images/big-burger.png',
               options: []
-            }
-          ]
-        },
-        {
-          id: '2',
-          name: 'Pepperoni Pizza',
-          description: 'Tomato sauce, mozzarella, and pepperoni',
-          price: 14.99,
-          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
-          items: [
+            },
             {
               id: '2',
-              name: 'Pepperoni Pizza',
-              description: 'Tomato sauce, mozzarella, and pepperoni',
-              price: 14.99,
-              image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+              name: 'Frites',
+              description: 'Frites maison croustillantes',
+              price: 3.99,
+              image: 'assets/images/fries.png',
+              options: []
+            },
+            {
+              id: '3',
+              name: 'Coca-Cola',
+              description: 'Boisson gazeuse rafraîchissante',
+              price: 2.99,
+              image: 'assets/images/cola.jpg',
               options: []
             }
           ]
@@ -58,42 +57,220 @@ export class RestaurantService {
       articles: [
         {
           id: '1',
-          name: 'Garlic Bread',
-          description: 'Freshly baked bread with garlic butter',
-          price: 4.99,
-          image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+          name: 'Classic Burger',
+          description: 'Burger simple avec fromage et sauce maison',
+          price: 6.99,
+          image: 'assets/images/burger.png',
           options: []
         }
       ]
     },
     {
       id: '2',
-      name: 'Sushi Master',
-      location: 'Tokyo',
-      description: 'Fresh and authentic Japanese sushi',
-      image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+      name: 'Kebab Express',
+      location: 'Lyon',
+      description: 'Kebabs et tacos préparés avec des produits frais',
+      image: 'assets/images/restaurant2.png',
       deliveryFee: 3.99,
       freeDelivery: true,
       menus: [
         {
-          id: '3',
-          name: 'Sushi Combo',
-          description: 'Assorted sushi pieces with miso soup',
-          price: 24.99,
-          image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+          id: '2',
+          name: 'Menu Royal',
+          description: 'Kebab royal avec frites et boisson',
+          price: 14.99,
+          image: 'assets/images/royal-menu.png',
           items: [
             {
-              id: '3',
-              name: 'Sushi Combo',
-              description: 'Assorted sushi pieces with miso soup',
-              price: 24.99,
-              image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c',
+              id: '4',
+              name: 'Kebab Royal',
+              description: 'Kebab avec viande de qualité supérieure',
+              price: 9.99,
+              image: 'assets/images/kebab.jpg',
+              options: []
+            },
+            {
+              id: '5',
+              name: 'Frites',
+              description: 'Frites maison croustillantes',
+              price: 3.99,
+              image: 'assets/images/fries.png',
+              options: []
+            },
+            {
+              id: '6',
+              name: 'Coca-Cola',
+              description: 'Boisson gazeuse rafraîchissante',
+              price: 2.99,
+              image: 'assets/images/cola.jpg',
+              options: []
+            }
+          ]
+        },
+        {
+          id: '3',
+          name: 'Menu Quipique',
+          description: 'Tacos poulet avec frites et boisson',
+          price: 13.99,
+          image: 'assets/images/quipique-menu.png',
+          items: [
+            {
+              id: '7',
+              name: 'Tacos Poulet',
+              description: 'Tacos au poulet mariné',
+              price: 8.99,
+              image: 'assets/images/tacos-poulet.png',
+              options: []
+            },
+            {
+              id: '8',
+              name: 'Frites',
+              description: 'Frites maison croustillantes',
+              price: 3.99,
+              image: 'assets/images/fries.png',
+              options: []
+            },
+            {
+              id: '9',
+              name: 'Coca-Cola',
+              description: 'Boisson gazeuse rafraîchissante',
+              price: 2.99,
+              image: 'assets/images/cola.jpg',
               options: []
             }
           ]
         }
       ],
       articles: []
+    },
+    {
+      id: '3',
+      name: 'Le Bistrot Parisien',
+      location: 'Paris',
+      description: 'Cuisine française traditionnelle dans un cadre chaleureux',
+      image: 'assets/images/restaurant3.jpg',
+      deliveryFee: 4.99,
+      freeDelivery: false,
+      menus: [
+        {
+          id: '4',
+          name: 'Menu Découverte',
+          description: 'Une sélection de nos meilleurs plats',
+          price: 24.99,
+          image: 'assets/images/component-card.png',
+          items: [
+            {
+              id: '10',
+              name: 'Entrée du Chef',
+              description: 'Assortiment de spécialités maison',
+              price: 8.99,
+              image: 'assets/images/component-card.png',
+              options: []
+            },
+            {
+              id: '11',
+              name: 'Plat Principal',
+              description: 'Au choix: Boeuf Bourguignon ou Coq au Vin',
+              price: 14.99,
+              image: 'assets/images/component-card.png',
+              options: []
+            },
+            {
+              id: '12',
+              name: 'Dessert Maison',
+              description: 'Sélection de desserts traditionnels',
+              price: 6.99,
+              image: 'assets/images/component-card.png',
+              options: []
+            }
+          ]
+        }
+      ],
+      articles: []
+    },
+    {
+      id: '4',
+      name: 'Pizza Express',
+      location: 'Marseille',
+      description: 'Pizzas artisanales cuites au feu de bois',
+      image: 'assets/images/restaurant4.png',
+      deliveryFee: 2.99,
+      freeDelivery: true,
+      menus: [],
+      articles: [
+        {
+          id: '13',
+          name: 'Pizza Margherita',
+          description: 'Tomate, mozzarella, basilic',
+          price: 9.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        },
+        {
+          id: '14',
+          name: 'Pizza Reine',
+          description: 'Tomate, mozzarella, jambon, champignons',
+          price: 11.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        }
+      ]
+    },
+    {
+      id: '5',
+      name: 'Sushi Bar',
+      location: 'Lyon',
+      description: 'Sushis frais préparés par nos maîtres sushi',
+      image: 'assets/images/restaurant5.png',
+      deliveryFee: 3.99,
+      freeDelivery: false,
+      menus: [],
+      articles: [
+        {
+          id: '15',
+          name: 'Assortiment Sushi',
+          description: 'Sélection de 12 pièces de sushi variés',
+          price: 18.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        },
+        {
+          id: '16',
+          name: 'California Roll',
+          description: 'Rouleau de crabe, avocat et concombre',
+          price: 12.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        }
+      ]
+    },
+    {
+      id: '6',
+      name: 'Le Petit Bistro',
+      location: 'Bordeaux',
+      description: 'Cuisine bistrot traditionnelle',
+      image: 'assets/images/restaurant6.png',
+      deliveryFee: 2.99,
+      freeDelivery: true,
+      menus: [],
+      articles: [
+        {
+          id: '17',
+          name: 'Steak Frites',
+          description: 'Steak de boeuf accompagné de frites maison',
+          price: 16.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        },
+        {
+          id: '18',
+          name: 'Salade César',
+          description: 'Salade avec poulet grillé, parmesan et croûtons',
+          price: 12.99,
+          image: 'assets/images/component-card.png',
+          options: []
+        }
+      ]
     }
   ];
 
