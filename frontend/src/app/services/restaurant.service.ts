@@ -13,7 +13,7 @@ export class RestaurantService {
   private mockRestaurants: Restaurant[] = [
     {
       id: '1',
-      name: 'Burger King',
+      name: 'Go Miam',
       location: 'Paris',
       description: 'Les meilleurs burgers de la ville, préparés avec des ingrédients frais',
       image: 'assets/images/restaurant1.png',

@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { Router } from '@angular/router';
-import { RestaurateurOrdersService } from '../../services/restaurateur-orders.service';
+import { MockRestaurateurOrdersService } from '../../services/mock-restaurateur-orders.service';
 import { RestaurateurOrder } from '../../models/restaurateur-order.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
@@ -42,7 +42,7 @@ export class RestaurateurOrdersComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    private restaurateurOrdersService: RestaurateurOrdersService,
+    private restaurateurOrdersService: MockRestaurateurOrdersService,
     private router: Router,
     private dialog: MatDialog,
     private notificationService: NotificationService
