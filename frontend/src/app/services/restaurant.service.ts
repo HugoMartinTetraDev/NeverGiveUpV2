@@ -52,6 +52,39 @@ export class RestaurantService {
               options: []
             }
           ]
+        },
+        {
+          id: '2',
+          name: 'Menu Royal',
+          description: 'Un menu royal avec un burger premium et des accompagnements gourmands',
+          price: 15.99,
+          image: 'assets/images/burger.png',
+          items: [
+            {
+              id: '4',
+              name: 'Royal Burger',
+              description: 'Burger avec steak wagyu, foie gras et truffe',
+              price: 12.99,
+              image: 'assets/images/burger.png',
+              options: []
+            },
+            {
+              id: '5',
+              name: 'Onion Rings',
+              description: 'Rondelles d\'oignon croustillantes',
+              price: 4.99,
+              image: 'assets/images/onion-rings.png',
+              options: []
+            },
+            {
+              id: '6',
+              name: 'Milkshake',
+              description: 'Milkshake maison au choix',
+              price: 5.99,
+              image: 'assets/images/milkshake.png',
+              options: []
+            }
+          ]
         }
       ],
       articles: [
@@ -141,7 +174,24 @@ export class RestaurantService {
           ]
         }
       ],
-      articles: []
+      articles: [
+        {
+          id: '3',
+          name: 'Kebab Classique',
+          description: 'Kebab traditionnel avec viande de boeuf',
+          price: 7.99,
+          image: 'assets/images/kebab.jpg',
+          options: []
+        },
+        {
+          id: '4',
+          name: 'Tacos Poulet',
+          description: 'Tacos avec viande de boeuf marinée',
+          price: 8.99,
+          image: 'assets/images/tacos-poulet.png',
+          options: []
+        }
+      ]
     },
     {
       id: '3',
