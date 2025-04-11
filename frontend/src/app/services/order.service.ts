@@ -172,7 +172,7 @@ export class OrderService {
         // Ajouter les articles de la commande au panier
         order.items.forEach(item => {
             this.cartService.addToCart({
-                id: Date.now().toString(), // Générer un nouvel ID
+                id: `order-${order.id}-${item.name}`, // Use consistent ID based on order and item
                 name: item.name,
                 price: item.price,
                 quantity: item.quantity,

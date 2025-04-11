@@ -4,6 +4,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { Order } from '../../../../models/order.model';
 import { OrderService } from '../../../../services/order.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-modify-order-dialog',
@@ -20,6 +21,7 @@ export class ModifyOrderDialogComponent {
     constructor(
         private dialogRef: MatDialogRef<ModifyOrderDialogComponent>,
         private orderService: OrderService,
+        private router: Router,
         @Inject(MAT_DIALOG_DATA) private data: { order: Order }
     ) {}
 
@@ -30,6 +32,9 @@ export class ModifyOrderDialogComponent {
     onConfirm(): void {
         if (this.data.order) {
             this.orderService.moveOrderToCart(this.data.order).subscribe(success => {
+                if (success) {
+                    this.router.navigate(['/cart']);
+                }
                 this.dialogRef.close(success);
             });
         } else {
